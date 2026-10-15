@@ -21,9 +21,9 @@ export function corpo(x, socio) {
   let p1;
   if (ls.length === 1) {
     const cidade = l.municipio ? `, em ${nomeBR(l.municipio)}` : '';
-    p1 = `A SPU emitiu o cálculo de laudêmio de ${brl(l.valor_total)}${deQuem} referente à transferência do imóvel RIP ${l.rip}${cidade}, com vencimento em ${dataBR(l.vencimento)}.`;
+    p1 = `Foi emitido um laudêmio de ${brl(l.valor_total)}${deQuem} referente à transferência do imóvel RIP ${l.rip}${cidade}, com vencimento em ${dataBR(l.vencimento)}.`;
   } else {
-    p1 = `A SPU emitiu os cálculos de laudêmio${deQuem} referentes à transferência de ${ls.length} imóveis, que somam ${brl(soma(ls))}:\n` +
+    p1 = `Foram emitidos laudêmios${deQuem} referentes à transferência de ${ls.length} imóveis, que somam ${brl(soma(ls))}:\n` +
       ls.map(y => `• RIP ${y.rip}${y.municipio ? ', em ' + nomeBR(y.municipio) : ''}: ${brl(y.valor_total)}, vencimento em ${dataBR(y.vencimento)}`).join('\n');
   }
   // lead que já recebeu proposta da Alpha e não fechou: abertura reconhece o contato anterior
