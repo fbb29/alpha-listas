@@ -1,0 +1,25 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Alpha · Listas</title><style>:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a30;--mut:#6b7479;--navy:#2C4C57;--gold:#B99042;--line:#e4e1d8}
+@media (prefers-color-scheme:dark){:root{--bg:#14191b;--card:#1d2427;--ink:#e8ecec;--mut:#9aa4a8;--navy:#7fb0bf;--gold:#d2ad62;--line:#2c3539}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 16px}h1{font:600 26px/1.2 Georgia,serif;color:var(--navy);margin:0 0 6px}.sub{color:var(--mut);font-size:14px;margin:0 0 28px}
+.g{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+a.c{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;text-decoration:none;color:var(--ink);border-top:3px solid var(--gold)}
+a.c:hover{border-color:var(--navy)}a.c b{display:block;font-size:18px;color:var(--navy);margin-bottom:4px}a.c span{color:var(--mut);font-size:14px}
+footer{margin-top:40px;color:var(--mut);font-size:12px}</style></head><body><div class="w">
+<h1>Alpha Soluções · Listas</h1><p class="sub">Listas de contato prontas para a equipe comercial. Escolha a lista.</p>
+<div class="g"><a class="c" href="/foro-email1/"><b>Foro · e-mail 1</b><span>Revisão de foro (terrenos) · 1.263 contatos em 3 listas · 14/10/2026</span></a>
+<a class="c" href="/multa/"><b>Multa de transferência</b><span>1.001 devedores com contato · R$ 19.891.923,52 · coleta 13/10/2026</span></a>
+<a class="c" href="/laudemio/"><b>Laudêmio</b><span>706 devedores com contato · R$ 12.989.310,11 · coleta 13/10/2026</span></a>
+<a class="c" href="/laudemio-fcl/"><b>Laudêmio · FCL novas</b><span id="fcl">atualizado diariamente</span></a></div>
+<footer>Uso interno. Não compartilhe este link.</footer></div><script src="/_app/topo.js"></script>
+<script>
+// card da lista ao vivo: número de leads e soma vêm da base do robô
+(async () => {
+  try {
+    const r = await fetch('/api/fcl', { cache: 'no-store' }); if (!r.ok) return;
+    const j = await r.json(), l = j.leads || [];
+    const soma = l.reduce((x, y) => x + Number(y.valor_total || 0), 0);
+    document.getElementById('fcl').textContent = `${l.length} lead${l.length === 1 ? '' : 's'} · R$ ${soma.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · atualizado diariamente`;
+  } catch (e) {}
+})();
+</script></body></html>

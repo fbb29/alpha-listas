@@ -1,0 +1,27 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Foro · e-mail 1</title><style>:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a30;--mut:#6b7479;--navy:#2C4C57;--gold:#B99042;--line:#e4e1d8}
+@media (prefers-color-scheme:dark){:root{--bg:#14191b;--card:#1d2427;--ink:#e8ecec;--mut:#9aa4a8;--navy:#7fb0bf;--gold:#d2ad62;--line:#2c3539}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:40px 16px}h1{font:600 26px/1.2 Georgia,serif;color:var(--navy);margin:0 0 6px}.sub{color:var(--mut);font-size:14px;margin:0 0 28px}
+.sub a{color:inherit}.g{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+a.c{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;text-decoration:none;color:var(--ink);border-top:3px solid var(--gold)}
+a.c:hover{border-color:var(--navy)}a.c b{display:block;font-size:18px;color:var(--navy);margin-bottom:4px}a.c span{color:var(--mut);font-size:14px;display:block}
+footer{margin-top:40px;color:var(--mut);font-size:12px}</style></head><body><div class="w">
+<p class="sub" style="margin-bottom:8px"><a href="/">Listas</a> › Foro · e-mail 1</p><h1>Escolha a lista</h1><p class="sub">Cada pessoa tem a sua lista: 1.263 contatos divididos em três, com o mesmo número de contatos e crédito equivalente.</p>
+<div class="g"><a class="c" href="lista.html?p=kely"><b>Kely</b><span>421 contatos · R$ 30.008.055,95 de crédito estimado</span><span id="c-kely"></span></a>
+<a class="c" href="lista.html?p=lucas"><b>Lucas Santos</b><span>421 contatos · R$ 29.637.081,05 de crédito estimado</span><span id="c-lucas"></span></a>
+<a class="c" href="lista.html?p=lucash"><b>Lucas Henrique</b><span>421 contatos · R$ 30.318.375,27 de crédito estimado</span><span id="c-lucash"></span></a></div>
+<footer>Clique em “Abrir e-mail” e o Mail abre com o texto pronto; o clique fica registrado com quem e quando. Marque “Enviado” depois de mandar: fica salvo para todos.</footer></div>
+<script src="/_app/topo.js"></script>
+<script>
+document.addEventListener('alpha-me', async (e) => {
+  const me = e.detail;
+  const P = ['kely', 'lucas', 'lucash'];
+  if (!me.admin && P.includes(me.usuario)) { location.replace('lista.html?p=' + me.usuario); return; }
+  try {
+    const m = await (await fetch('/api/enviados?lista=foro-email1', { cache: 'no-store' })).json();
+    const c = {}, t = {}; P.forEach(p => { c[p] = 0; t[p] = new Set(); });
+    Object.entries(m).forEach(([k, v]) => { if (c[v.u] === undefined) return; if (k.includes('#')) t[v.u].add(k.split('#')[0]); else c[v.u]++; });
+    P.forEach(p => { document.getElementById('c-' + p).textContent = `Contatados: ${t[p].size} · Enviados: ${c[p]}`; });
+  } catch (err) {}
+});
+</script></body></html>

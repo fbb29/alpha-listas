@@ -1,0 +1,140 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>E-mails de foro</title><style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a30;--mut:#6b7479;--navy:#2C4C57;--gold:#B99042;--line:#e4e1d8;--done:#eef3ee}
+@media (prefers-color-scheme:dark){:root{--bg:#14191b;--card:#1d2427;--ink:#e8ecec;--mut:#9aa4a8;--navy:#7fb0bf;--gold:#d2ad62;--line:#2c3539;--done:#1f2b22}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+header{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 24px 16px}
+.crumb{font-size:13px;color:var(--mut);margin-bottom:6px}.crumb a{color:inherit}
+h1{margin:0 0 4px;font:600 20px/1.2 Georgia,serif;color:var(--navy)}.sub{color:var(--mut);font-size:13px}
+.bar{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+input[type=search]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:14px}
+.prog{font-size:13px;color:var(--mut)}.prog b{color:var(--gold)}
+label.f{font-size:13px;color:var(--mut);display:flex;gap:6px;align-items:center}
+main{padding:12px 24px 40px;max-width:1400px;margin:0 auto}table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--mut);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--card)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}tr.ok td{background:var(--done);opacity:.75}
+td.n{color:var(--mut);font-variant-numeric:tabular-nums;width:48px}.v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nm{font-weight:600}.em{color:var(--mut);font-size:12.5px}.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:10px;border:1px solid var(--gold);color:var(--gold);margin-left:6px}
+a.btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;padding:7px 12px;border-radius:7px;font-size:13px;font-weight:600;white-space:nowrap}
+a.wa{background:#1f7a4d;margin:2px 0}.zz{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}td.mun{max-width:150px}a.btn2{background:transparent;color:var(--navy);border:1px solid var(--navy);margin-left:6px;font-weight:500}
+@media (prefers-color-scheme:dark){a.btn{color:#14191b}a.btn2{color:var(--navy)}a.wa{color:#fff}}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--navy)}.quem{font-size:11px;color:var(--mut);display:block}
+#msg{padding:40px;text-align:center;color:var(--mut)}
+@media (max-width:760px){header,main{padding-left:16px;padding-right:16px}.hide-s{display:none}}
+</style></head><body>
+<header><div class="crumb"><a href="/">Listas</a> › <a href="./">Foro · e-mail 1</a> › <span id="cnome"></span></div>
+<h1>E-mails de revisão de foro — <span id="nome"></span></h1>
+<div class="sub" id="resumo">Carregando…</div>
+<div class="bar"><input type="search" id="q" placeholder="Buscar por nome, e-mail ou município"><label class="f"><input type="checkbox" id="pend"> só pendentes</label>
+<span class="prog">Enviados: <b id="cnt">0</b> de <span id="tot">0</span></span></div></header>
+<main><table><thead><tr><th>#</th><th>Titular</th><th class="hide-s">Município</th><th class="v">Crédito</th><th class="v hide-s">Redução/ano</th><th>Contato</th><th>Enviado · observação</th></tr></thead><tbody id="tb"></tbody></table>
+<div id="msg"></div>
+<p class="sub" style="margin-top:14px">Clique em “Abrir e-mail”: o Mail abre com destinatário, assunto e texto prontos. A assinatura é a do próprio Mail. “WhatsApp” abre a conversa no WhatsApp Web (só para celular). O clique em “Abrir e-mail” ou “WhatsApp” fica registrado na linha com o canal, quem clicou e a data (o × remove um registro seu feito por engano). Depois de enviar, marque “Enviado”: fica salvo para toda a equipe. Os avisos em amarelo e vermelho vêm da conferência da base (e-mail corrigido, contato em campanha do Instantly, e-mail que precisa ser conferido).</p></main>
+<script src="/_app/topo.js"></script>
+<script type="module">
+import { brl, mailto, zap } from './modelo.js';
+import { marcas, htmlMarcas, marcar, versao, corrigir, htmlFeito, carregarAvisos, avisosDe, htmlAvisos, oculto, nomeBR, norm, esc, pendentes, htmlObs, ligarObs, registrarClique } from '/_app/canal.js';
+const LISTA = 'foro-email1', NCHUNKS = 8;
+const NOMES = { kely: 'Kely', lucas: 'Lucas Santos', lucash: 'Lucas Henrique' }, LETRA = { kely: 'K', lucas: 'L', lucash: 'H' };
+const pp = new URLSearchParams(location.search);
+let p = (pp.get('p') || '').toLowerCase();
+const me = await new Promise(res => window.ALPHA_ME ? res(window.ALPHA_ME) : document.addEventListener('alpha-me', e => res(e.detail), { once: true }));
+if (!me.admin && NOMES[me.usuario]) p = me.usuario;
+if (!NOMES[p]) { location.replace('./'); throw 0; }
+document.title = 'E-mails de foro — ' + NOMES[p];
+document.getElementById('nome').textContent = NOMES[p];
+document.getElementById('cnome').textContent = NOMES[p];
+const $ = id => document.getElementById(id);
+
+async function chunk(i) {
+  const r = await fetch(`/data/${LISTA}/c${i}.bin`, { cache: 'no-store' });
+  if (!r.ok) throw new Error('dados ' + r.status);
+  const buf = new Uint8Array(await r.arrayBuffer());
+  let txt;
+  if (buf[0] === 0x1f && buf[1] === 0x8b) {
+    const s = new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));
+    txt = await new Response(s).text();
+  } else txt = new TextDecoder().decode(buf);
+  return JSON.parse(txt);
+}
+let rows;
+// divisão em 3 (14/10): do maior crédito para o menor, distribuição em ida e volta K, L, H, H, L, K — mesmo número de contatos e crédito equivalente.
+// A mesma divisão está no servidor (middleware.js, DONO_FORO): quem não é admin só registra contato da própria lista.
+const ORDEM = ['K', 'L', 'H', 'H', 'L', 'K'];
+try {
+  const [dados] = await Promise.all([Promise.all([...Array(NCHUNKS).keys()].map(chunk)), carregarAvisos()]);
+  rows = dados.flat()
+    .sort((a, b) => (b[12] - a[12]) || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
+    .filter((r, i) => ORDEM[i % 6] === LETRA[p])
+    .filter(r => !oculto(LISTA, r[0]));   // retirados depois da divisão (ex.: cliente com processo na SPU), sem mexer na divisão
+}
+catch (e) { $('msg').textContent = 'Não foi possível carregar a lista (' + e.message + '). Recarregue a página.'; throw e; }
+
+const cred = rows.reduce((a, r) => a + r[12], 0), red = rows.reduce((a, r) => a + r[11], 0);
+$('resumo').textContent = `${rows.length} contatos · crédito estimado ${brl(cred)} · redução ${brl(red)} por ano · ordem do maior crédito para o menor`;
+$('tot').textContent = rows.length;
+
+$('tb').innerHTML = rows.map((r, i) => {
+  const [e, e2r, titRaw, , , n, mun, , rip, , , rd, cr, t1, t2, set] = r;
+  const tit = nomeBR(titRaw);
+  const ems = corrigir([e, e2r]), ea = ems[0] || e, e2 = ems[1] || '';
+  const zz = [], vistos = new Set();
+  for (const t of [t1, t2]) { const [w, f] = zap(t); if (!f || vistos.has(f)) continue; vistos.add(f);
+    zz.push(w ? `<a class="btn wa" data-ev="whatsapp" data-d="${esc(f)}" data-a="${esc(w.slice(2))}" target="_blank" rel="noopener" href="https://web.whatsapp.com/send?phone=${w}">WhatsApp ${f}</a>` : `<span class="em">Fixo ${f}</span>`); }
+  return `<tr data-k="${esc(e)}" data-t="${esc(norm(tit + ' ' + titRaw + ' ' + ea + ' ' + e2 + ' ' + mun))}"><td class="n">${i + 1}</td>` +
+    `<td><div class="nm">${esc(tit)}${set ? '<span class="tag" title="Este titular já recebeu o e-mail da campanha de foro de setembro (Instantly)">já recebeu e-mail em set.</span>' : ''}</div><div class="em">${n} imóve${n === 1 ? 'l' : 'is'} · RIP ${esc(rip)}</div></td>` +
+    `<td class="hide-s mun">${esc(mun)}</td><td class="v">${brl(cr)}</td><td class="v hide-s">${brl(rd)}</td>` +
+    `<td><a class="btn" data-ev="abriu_email" data-d="${esc(ea)}" data-a="${esc(ea)}" href="${esc(mailto([ea], r))}">Abrir e-mail</a>` +
+    (e2 ? `<a class="btn btn2" data-ev="abriu_email_2" data-d="${esc(ea + ', ' + e2)}" data-a="${esc(ea + ', ' + e2)}" href="${esc(mailto([ea, e2], r))}">Para os 2 e-mails</a>` : '') +
+    `<div class="em">${esc(ea)}${e2 ? ' · ' + esc(e2) : ''}</div>${zz.length ? '<div class="zz">' + zz.join(' ') + '</div>' : ''}${htmlAvisos(avisosDe(LISTA, e))}<div class="reg"></div></td>` +
+    `<td><input type="checkbox" aria-label="Enviado"><span class="quem"></span>${htmlObs()}</td></tr>`;
+}).join('');
+
+const trs = [...document.querySelectorAll('#tb tr')];
+let s = {}, mk = {}, erros = {};
+const pend = pendentes();
+const fmtAlvo = (a, c) => c === 'w' && /^\d{10,11}$/.test(a) ? (a.length === 11 ? `(${a.slice(0, 2)}) ${a.slice(2, 7)}-${a.slice(7)}` : `(${a.slice(0, 2)}) ${a.slice(2, 6)}-${a.slice(6)}`) : a;
+const nomeU = u => NOMES[u] || (me.usuarios && me.usuarios[u]) || u || '';
+const pode = x => me.admin || x.u === me.usuario;
+function upd() {
+  let c = 0; mk = marcas(s);
+  trs.forEach(tr => { const v = s[tr.dataset.k], lst = (mk[tr.dataset.k] || []).concat(erros[tr.dataset.k] || []); tr.classList.toggle('ok', !!v); tr.classList.toggle('tent', lst.length > 0); tr.querySelector('input').checked = !!v;
+    tr.querySelector('.reg').innerHTML = htmlMarcas(lst, nomeU, fmtAlvo, pode);
+    tr.querySelector('.quem').innerHTML = htmlFeito(v, lst, nomeU, 'Enviado'); if (v) c++; });
+  $('cnt').textContent = c; filt();
+}
+function filt() { const q = norm($('q').value.trim()), pe = $('pend').checked;
+  trs.forEach(tr => { tr.style.display = (tr.dataset.t.includes(q) && !(pe && s[tr.dataset.k])) ? '' : 'none'; }); }
+async function carregar() { try { const r = await fetch(`/api/enviados?lista=${LISTA}`, { cache: 'no-store' }); versao(r); if (r.ok) { s = pend.aplicar(await r.json()); upd(); } } catch (e) {} }
+trs.forEach(tr => {
+  tr.querySelector('input').addEventListener('change', async ev2 => {
+    const on = ev2.target.checked, k = tr.dataset.k, antes = s[k];
+    if (!on && antes && !pode(antes)) { ev2.target.checked = true; alert(`Este envio foi marcado por ${nomeU(antes.u)}. Só quem marcou (ou Felipe/Fernanda) pode desmarcar.`); return; }
+    const v = on ? { u: me.usuario, ts: new Date().toISOString() } : null;
+    if (v) s[k] = v; else delete s[k];
+    pend.set(k, v); upd();
+    const res = await marcar(LISTA, k, on);
+    if (!res.ok) { alert(res.erro || 'Não salvou. Verifique a internet e marque de novo.'); if (antes) s[k] = antes; else delete s[k]; pend.set(k, antes || null); upd(); }
+  });
+  // o link abre normalmente (Mail/WhatsApp) e o clique é registrado em paralelo; o servidor recusa o registro se o contato não for da lista de quem clicou
+  tr.querySelectorAll('a[data-ev]').forEach(a => a.addEventListener('click', async () => {
+    const k = tr.dataset.k, canal = a.dataset.ev === 'whatsapp' ? 'w' : 'e', alvo = a.dataset.a, c = `${k}#${canal}:${alvo}`;
+    const v = { u: me.usuario, ts: new Date().toISOString() };
+    s[c] = v; pend.set(c, v); delete erros[k]; upd();
+    const res = await registrarClique({ lista: LISTA, chave: k, evento: a.dataset.ev, alvo, detalhe: tr.querySelector('.nm').firstChild.textContent + ' · ' + a.dataset.d });
+    if (!res.ok) { delete s[c]; pend.set(c, null); erros[k] = [{ c, canal, alvo, u: me.usuario, err: res.erro || 1 }]; upd();
+      if (res.status === 403) alert(res.erro); }
+  }));
+  tr.querySelector('.reg').addEventListener('click', async e3 => {
+    const b = e3.target.closest('button[data-c]'); if (!b) return;
+    const c = b.dataset.c, v = s[c]; if (!v) return;
+    if (!confirm('Remover este registro de contato?')) return;
+    delete s[c]; pend.set(c, null); upd();
+    const res = await marcar(LISTA, c, false);
+    if (!res.ok) { s[c] = v; pend.set(c, v); upd(); alert(res.erro || 'Não removeu. Verifique a internet e tente de novo.'); }
+  });
+});
+$('q').addEventListener('input', filt); $('pend').addEventListener('change', filt);
+ligarObs(LISTA, trs, nomeU);
+upd(); carregar(); setInterval(carregar, 60000);
+</script></body></html>

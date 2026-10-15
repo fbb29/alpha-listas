@@ -1,0 +1,210 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Laudêmio · FCL novas</title><style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a30;--mut:#6b7479;--navy:#2C4C57;--gold:#B99042;--line:#e4e1d8;--done:#eef3ee;--red:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#14191b;--card:#1d2427;--ink:#e8ecec;--mut:#9aa4a8;--navy:#7fb0bf;--gold:#d2ad62;--line:#2c3539;--done:#1f2b22;--red:#f08a8a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+header{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 24px 14px}
+.crumb{font-size:13px;color:var(--mut);margin-bottom:6px}.crumb a{color:inherit}
+h1{margin:0 0 4px;font:600 20px/1.2 Georgia,serif;color:var(--navy)}.sub{color:var(--mut);font-size:13px}
+.tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;text-align:left;line-height:1.3}
+.tabs button b{display:block;font-size:14px;color:var(--navy)}.tabs button.on{border-color:var(--navy);box-shadow:inset 0 -3px 0 var(--gold)}
+.bar{display:flex;gap:14px;align-items:center;margin-top:12px;flex-wrap:wrap}
+input[type=search]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:14px}
+select{padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:13px}
+.prog{font-size:13px;color:var(--mut)}.prog b{color:var(--gold)}
+label.f{font-size:13px;color:var(--mut);display:flex;gap:6px;align-items:center}
+button.at{border:1px solid var(--navy);background:transparent;color:var(--navy);border-radius:7px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+main{padding:12px 24px 40px;max-width:1500px;margin:0 auto}table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--mut);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--card)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.urg td:first-child{box-shadow:inset 3px 0 0 var(--red)}tr.fim td{background:var(--done)}tr.fim td:not(:last-child){opacity:.75}
+td.n{color:var(--mut);font-variant-numeric:tabular-nums;width:40px}.v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nm{font-weight:600}.em{color:var(--mut);font-size:12.5px}.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:10px;border:1px solid var(--gold);color:var(--gold);margin-left:6px}
+.venc{white-space:nowrap;font-variant-numeric:tabular-nums}.dias{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:600;border-radius:10px;padding:1px 7px;color:var(--mut);border:1px solid var(--line)}
+.dias.urg{color:#fff;background:var(--red);border-color:var(--red)}@media (prefers-color-scheme:dark){.dias.urg{color:#14191b}}
+.cl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+a.btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;padding:6px 11px;border-radius:7px;font-size:13px;font-weight:600;white-space:nowrap}
+a.wa{background:#1f7a4d}@media (prefers-color-scheme:dark){a.btn{color:#14191b}a.wa{color:#fff}}
+.pend{font-size:12.5px;color:var(--mut);font-style:italic}
+.stt{min-width:210px}.stt select{width:100%;font-weight:600}.stt textarea{width:100%;margin-top:6px;min-height:52px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.35;font-family:inherit;resize:vertical}
+.stt .ln{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;font-size:11.5px;color:var(--mut)}
+.stt button{border:0;background:var(--navy);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer}.stt button:disabled{opacity:.35;cursor:default}
+@media (prefers-color-scheme:dark){.stt button{color:#14191b}}
+.s-novo{color:var(--ink)}.s-em_contato{color:#9a6b00}.s-respondeu{color:#1f5fa8}.s-proposta{color:#7a3fa0}.s-fechado{color:#1f7a4d}.s-descartado{color:var(--mut)}
+#msg{padding:40px;text-align:center;color:var(--mut)}
+@media (max-width:760px){header,main{padding-left:16px;padding-right:16px}.hide-s{display:none}}
+details.env{margin-top:26px}details.env summary{cursor:pointer;font:600 15px/1.3 Georgia,serif;color:var(--mut);padding:8px 0}
+details.env table{opacity:.92}h2.ae{font:600 17px/1.3 Georgia,serif;color:var(--navy);margin:6px 0 10px}
+button.ok{border:1px solid #1f7a4d;background:transparent;color:#1f7a4d;border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor:default}
+.soc{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}.soc .sn{font-size:12.5px;font-weight:600;margin-bottom:4px}
+.envq{font-size:12.5px;color:#1f7a4d;font-weight:600}
+</style></head><body>
+<header><div class="crumb"><a href="/">Listas</a> › Laudêmio · FCL novas</div>
+<h1>Laudêmio · FCL novas</h1>
+<div class="sub" id="resumo">Carregando…</div>
+<div class="tabs" id="tabs"></div>
+<div class="bar"><input type="search" id="q" placeholder="Buscar por nome, CPF/CNPJ, RIP, município ou endereço">
+<select id="fst" aria-label="Status"><option value="">Todos os status</option></select>
+<label class="f"><input type="checkbox" id="fc"> só com contato</label><label class="f"><input type="checkbox" id="f7"> vence em menos de 7 dias</label>
+<span class="prog" id="prog"></span><button type="button" class="at" id="atual">Atualizar</button></div></header>
+<main><h2 class="ae" id="hae">A enviar</h2>
+<table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Contato</th><th>Status</th></tr></thead><tbody id="tb"></tbody></table>
+<div id="msg"></div>
+<details class="env" id="denv"><summary id="henv">Enviados (0)</summary>
+<table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Envio</th><th>Status</th></tr></thead><tbody id="te"></tbody></table></details>
+<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: clique em “Enviar e-mail” (abre o Gmail com destinatário, assunto e texto prontos) ou no número do WhatsApp; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados”, com o seu nome e a hora, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
+<script src="/_app/topo.js"></script>
+<script type="module">
+import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
+import { brl, dataBR, gmail } from '/_app/modelo_fcl.js';
+const $ = id => document.getElementById(id);
+const STATUS = [['novo', 'Novo'], ['em_contato', 'Em contato'], ['respondeu', 'Respondeu'], ['proposta', 'Proposta'], ['fechado', 'Fechado'], ['descartado', 'Descartado']];
+$('fst').innerHTML += STATUS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+const me = await new Promise(res => window.ALPHA_ME ? res(window.ALPHA_ME) : document.addEventListener('alpha-me', e => res(e.detail), { once: true }));
+let tier = 'A', leads = [], grupos = [];
+try { tier = localStorage.getItem('fcl-tier') || 'A'; } catch (e) {}
+
+const hojeSP = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
+const dias = d => Math.round((Date.parse(String(d).slice(0, 10)) - Date.parse(hojeSP())) / 86400000);
+const limpaEnd = s => String(s || '').replace(/\s*\S*\d{8,}.*$/, '').trim();
+const hora = ts => { try { const d = new Date(ts), o = { timeZone: 'America/Sao_Paulo' };
+  return d.toLocaleDateString('pt-BR', o) + ' às ' + d.toLocaleTimeString('pt-BR', { ...o, hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+const chaveDoc = l => String(l.cpf_cnpj || '').replace(/\D/g, '') || 'fcl:' + l.fcl;
+const soma = a => a.reduce((x, l) => x + Number(l.valor_total || 0), 0);
+const telsDe = l => [l.telefone_1, l.telefone_2, l.telefone_3].filter(Boolean);
+const emsDe = l => [l.email_1, l.email_2].filter(Boolean);
+const socios = l => Array.isArray(l.contatos_socios) ? l.contatos_socios : [];
+
+async function lerLeads() {
+  const r = await fetch('/api/fcl', { cache: 'no-store' }); versao(r);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || ('erro ' + r.status));
+  return j;
+}
+// junta as FCLs do mesmo CPF/CNPJ: um card, um e-mail, um "OK, enviado"
+function agrupar() {
+  const m = new Map();
+  for (const l of leads) { const k = chaveDoc(l); if (!m.has(k)) m.set(k, []); m.get(k).push(l); }
+  grupos = [...m.entries()].map(([k, ls]) => {
+    ls.sort((a, b) => Number(b.valor_total) - Number(a.valor_total));
+    const falta = ls.filter(l => !l.enviado_em);
+    return { k, ls, falta, enviado: !falta.length, valor: soma(ls), venc: ls.map(l => String(l.vencimento || '')).sort()[0] };
+  }).sort((a, b) => b.valor - a.valor);
+}
+function abas() {
+  const g = t => leads.filter(l => !t || l.tier === t);
+  const tabs = [['A', 'Tier A', 'R$ 40.000,00 ou mais'], ['B', 'Tier B', 'de R$ 20.000,00 a R$ 40.000,00'], ['', 'Todos', 'Tier A e Tier B']];
+  $('tabs').innerHTML = tabs.map(([t, n, d]) => { const a = g(t); return `<button type="button" data-t="${t}" class="${t === tier ? 'on' : ''}"><b>${n} · ${a.length} lead${a.length === 1 ? '' : 's'} · ${brl(soma(a))}</b>${d}</button>`; }).join('');
+  $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => { tier = b.dataset.t; try { localStorage.setItem('fcl-tier', tier); } catch (e) {} abas(); filt(); });
+}
+function botoes(g, socio, ems, tfs, vistos) {
+  const alvo = g.falta.length ? g.falta : g.ls, out = [];
+  for (const e of ems) { const x = String(e).trim().toLowerCase(); if (!x || vistos.has(x)) continue; vistos.add(x);
+    out.push(`<div class="cl"><a class="btn" data-c="email" data-a="${esc(e)}" target="_blank" rel="noopener" href="${esc(gmail(e, alvo, socio))}">Enviar e-mail</a><button type="button" class="ok" data-c="email" data-a="${esc(e)}">OK, enviado</button><span class="em">${esc(e)}</span></div>`); }
+  for (const t of tfs) { const f = fone(t); if (!f.fmt || vistos.has(f.fmt)) continue; vistos.add(f.fmt);
+    out.push(f.wa ? `<div class="cl"><a class="btn wa" data-c="whatsapp" data-a="${esc(f.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${f.wa}">WhatsApp ${f.fmt}</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(f.fmt)}">OK, enviado</button></div>` : `<div class="cl"><span class="em">Fixo ${f.fmt}</span></div>`); }
+  return out.join('');
+}
+function card(g, i) {
+  const l = g.ls[0], d = dias(g.venc), urg = d < 7, vistos = new Set();
+  const nome = nomeBR(l.responsavel);
+  let contato = botoes(g, null, g.ls.flatMap(emsDe), g.ls.flatMap(telsDe), vistos);
+  const soc = new Map(); for (const y of g.ls) for (const s of socios(y)) { const k = s.cpf || s.nome; if (!soc.has(k)) soc.set(k, s); }
+  for (const s of soc.values()) { const b = botoes(g, s.nome, s.emails || [], s.telefones || [], vistos);
+    if (b) contato += `<div class="soc"><div class="sn">Sócio: ${esc(nomeBR(s.nome))}</div>${b}</div>`; }
+  const temContato = !!contato;
+  if (!temContato) contato = '<span class="pend">contato pendente</span>';
+  const multi = g.ls.length > 1 ? `<span class="tag">mesmo titular de ${g.ls.length} imóveis</span>` : '';
+  const st = l.status_comercial || 'novo';
+  const sel = STATUS.map(([v, t]) => `<option value="${v}"${v === st ? ' selected' : ''}>${t}</option>`).join('');
+  const ult = g.ls.map(y => y.enviado_em ? y : null).filter(Boolean).sort((a, b) => String(b.enviado_em).localeCompare(String(a.enviado_em)))[0];
+  const envio = ult ? `<div class="envq">Enviado por ${esc(ult.enviado_por || '')} em ${hora(ult.enviado_em)}</div>` +
+    (Array.isArray(ult.envios) && ult.envios.length ? `<div class="em">${esc(ult.envios[ult.envios.length - 1].canal === 'whatsapp' ? 'por WhatsApp' : 'por e-mail')}</div>` : '') : '';
+  const parcial = !g.enviado && g.falta.length < g.ls.length ? `<div class="em">${g.ls.length - g.falta.length} de ${g.ls.length} FCLs já enviadas</div>` : '';
+  const muni = [...new Set(g.ls.map(y => nomeBR(y.municipio || '')))].join(', ');
+  return `<tr data-k="${esc(g.k)}" data-tier="${esc([...new Set(g.ls.map(y => y.tier))].join(' '))}" data-c="${temContato ? 1 : 0}" data-d="${d}" data-st="${esc(st)}" class="${urg ? 'urg' : ''}"
+    data-t="${esc(norm([nome, l.responsavel, l.cpf_cnpj, String(l.cpf_cnpj || '').replace(/\D/g, ''), muni, ...g.ls.flatMap(y => [y.rip, y.fcl, limpaEnd(y.endereco)]), ...g.ls.flatMap(emsDe), ...[...soc.values()].map(s => s.nome)].join(' ')))}">` +
+    `<td class="n">${i + 1}</td><td class="v"><b>${brl(g.valor)}</b><div class="em">Tier ${esc([...new Set(g.ls.map(y => y.tier))].join('/'))}</div></td>` +
+    `<td class="venc">${dataBR(g.venc)}<br><span class="dias${urg ? ' urg' : ''}">${d < 0 ? `venceu há ${-d} dia${d === -1 ? '' : 's'}` : d === 0 ? 'vence hoje' : `vence em ${d} dia${d === 1 ? '' : 's'}`}</span></td>` +
+    `<td><div class="nm">${esc(nome)}${multi}</div><div class="em">${esc(l.tipo_doc || '')} ${esc(l.cpf_cnpj || '')}</div><div class="em">FCL ${g.ls.map(y => esc(y.fcl)).join(', ')}</div></td>` +
+    `<td class="em" style="white-space:nowrap">${g.ls.map(y => esc(y.rip) + (g.ls.length > 1 ? ' · ' + brl(y.valor_total) : '')).join('<br>')}</td>` +
+    `<td class="hide-s"><div>${esc(muni)}</div>${g.ls.map(y => `<div class="em">${esc(nomeBR(limpaEnd(y.endereco)))}</div>`).join('')}</td>` +
+    `<td>${g.enviado ? envio : parcial + contato}</td>` +
+    `<td class="stt"><select aria-label="Status" class="s-${esc(st)}">${sel}</select>` +
+    `<textarea placeholder="Observação">${esc(l.observacao || '')}</textarea><div class="ln"><span class="qm">${l.responsavel_comercial ? 'responsável: ' + esc(l.responsavel_comercial) : ''}</span><button type="button" class="sv" disabled>Salvar</button></div></td></tr>`;
+}
+function filt() {
+  const q = norm($('q').value.trim()), st = $('fst').value, fc = $('fc').checked, f7 = $('f7').checked;
+  const cont = { tb: [0, 0], te: [0, 0] };
+  for (const id of ['tb', 'te']) document.querySelectorAll(`#${id} tr`).forEach(tr => {
+    const ok = (!tier || tr.dataset.tier.split(' ').includes(tier)) && tr.dataset.t.includes(q) && (!st || tr.dataset.st === st) && !(id === 'tb' && fc && tr.dataset.c !== '1') && !(f7 && Number(tr.dataset.d) >= 7);
+    tr.style.display = ok ? '' : 'none';
+    if (ok) { const g = grupos.find(x => x.k === tr.dataset.k); cont[id][0]++; cont[id][1] += g ? g.valor : 0; }
+  });
+  $('hae').textContent = `A enviar (${cont.tb[0]} · ${brl(cont.tb[1])})`;
+  $('henv').textContent = `Enviados (${cont.te[0]} · ${brl(cont.te[1])})`;
+  $('prog').innerHTML = `Mostrando <b>${cont.tb[0] + cont.te[0]}</b> · ${brl(cont.tb[1] + cont.te[1])}`;
+  $('msg').textContent = cont.tb[0] ? '' : (leads.length ? 'Nada a enviar com esses filtros.' : '');
+}
+async function post(corpo) {
+  const r = await fetch('/api/fcl', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(corpo) }); versao(r);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || ('erro ' + r.status));
+  return j;
+}
+function render() {
+  agrupar(); abas();
+  const ae = grupos.filter(g => !g.enviado), en = grupos.filter(g => g.enviado)
+    .sort((a, b) => String(b.ls.map(y => y.enviado_em).sort().pop()).localeCompare(String(a.ls.map(y => y.enviado_em).sort().pop())));
+  $('tb').innerHTML = ae.map(card).join(''); $('te').innerHTML = en.map(card).join('');
+  document.querySelectorAll('#tb tr, #te tr').forEach(ligar); filt();
+}
+function ligar(tr) {
+  const g = () => grupos.find(x => x.k === tr.dataset.k);
+  const sel = tr.querySelector('select'), ta = tr.querySelector('textarea'), bt = tr.querySelector('.sv'), qm = tr.querySelector('.qm');
+  let salvo = ta.value;
+  sel.addEventListener('change', async () => {
+    const novo = sel.value, antigo = tr.dataset.st; sel.disabled = true;
+    try { for (const l of g().ls) { const j = await post({ fcl: l.fcl, status_comercial: novo }); Object.assign(l, j.lead || { status_comercial: novo }); }
+      tr.dataset.st = novo; sel.className = 's-' + novo; qm.textContent = `responsável: ${me.nome} · salvo`;
+      if (novo === 'descartado') { leads = leads.filter(l => !g().ls.includes(l)); render(); return; }
+    } catch (e) { sel.value = antigo; alert('Não salvou o status: ' + e.message); }
+    sel.disabled = false; filt();
+  });
+  ta.addEventListener('input', () => { bt.disabled = ta.value === salvo; tr.dataset.sujo = ta.value === salvo ? '' : '1'; });
+  bt.addEventListener('click', async () => {
+    bt.disabled = true;
+    try { for (const l of g().ls) { await post({ fcl: l.fcl, observacao: ta.value }); l.observacao = ta.value; } salvo = ta.value; tr.dataset.sujo = ''; qm.textContent = 'observação salva'; }
+    catch (e) { bt.disabled = false; alert('Não salvou a observação: ' + e.message); }
+  });
+  // clicou em Enviar: destaca o "OK, enviado" ao lado
+  tr.querySelectorAll('a[data-c]').forEach(a => a.addEventListener('click', () => { const ok = a.parentElement.querySelector('button.ok'); if (ok) ok.classList.add('vez'); }));
+  tr.querySelectorAll('button.ok').forEach(b => b.addEventListener('click', async () => {
+    const gr = g(), fcls = (gr.falta.length ? gr.falta : gr.ls).map(l => l.fcl);
+    tr.querySelectorAll('button.ok').forEach(x => x.disabled = true); b.textContent = 'gravando…';
+    try {
+      const j = await post({ fcls, enviado: true, canal: b.dataset.c, alvo: b.dataset.a });
+      for (const n of j.leads || []) { const l = leads.find(y => y.fcl === n.fcl); if (l) Object.assign(l, n); }
+      if (tr.dataset.sujo === '1') { const t = ta.value; render(); const nt = document.querySelector(`tr[data-k="${CSS.escape(gr.k)}"] textarea`); if (nt) { nt.value = t; nt.dispatchEvent(new Event('input')); } }
+      else render();
+    } catch (e) { tr.querySelectorAll('button.ok').forEach(x => x.disabled = false); b.textContent = 'OK, enviado'; alert('Não registrou o envio: ' + e.message); }
+  }));
+}
+async function carregar(manual) {
+  if (document.querySelector('tr[data-sujo="1"]') && !manual) return;
+  $('atual').disabled = true;
+  try {
+    const j = await lerLeads();
+    leads = (j.leads || []).filter(l => l.status_comercial !== 'descartado');
+    $('resumo').textContent = `${leads.length} leads · ${brl(soma(leads))} em laudêmio · base do robô atualizada todo dia · lida às ${quando(new Date())}`;
+    render();
+  } catch (e) { $('msg').textContent = 'Não foi possível ler os leads (' + e.message + '). Tente “Atualizar”.'; $('resumo').textContent = ''; }
+  $('atual').disabled = false;
+}
+['q', 'fst', 'fc', 'f7'].forEach(id => $(id).addEventListener(id === 'q' ? 'input' : 'change', filt));
+$('atual').onclick = () => { if (document.querySelector('tr[data-sujo="1"]') && !confirm('Há observação não salva. Atualizar e perder o texto?')) return; carregar(true); };
+await carregar(true);
+setInterval(() => carregar(false), 300000);
+</script></body></html>
