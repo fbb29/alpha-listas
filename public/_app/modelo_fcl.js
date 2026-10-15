@@ -34,8 +34,8 @@ export function corpo(x, socio) {
     const quando = m ? `Em ${m[1]}` : 'Recentemente';
     saud = '';
     p1 = ls.length === 1
-      ? `Olá, ${quem}. ${quando} a Alpha Soluções enviou uma proposta para o imóvel RIP ${l.rip}. Agora saiu a FCL de laudêmio desse imóvel, no valor de ${brl(l.valor_total)}, com vencimento em ${dataBR(l.vencimento)}.`
-      : `Olá, ${quem}. ${quando} a Alpha Soluções enviou uma proposta para os imóveis RIP ${ls.map(y => y.rip).join(', ')}. Agora saíram as FCLs de laudêmio desses imóveis, que somam ${brl(soma(ls))}:\n` +
+      ? `Olá, ${quem}. ${quando} a Alpha Soluções enviou uma proposta para o imóvel RIP ${l.rip}. Agora foi emitido um laudêmio desse imóvel, no valor de ${brl(l.valor_total)}, com vencimento em ${dataBR(l.vencimento)}.`
+      : `Olá, ${quem}. ${quando} a Alpha Soluções enviou uma proposta para os imóveis RIP ${ls.map(y => y.rip).join(', ')}. Agora foram emitidos laudêmios desses imóveis, que somam ${brl(soma(ls))}:\n` +
         ls.map(y => `• RIP ${y.rip}${y.municipio ? ', em ' + nomeBR(y.municipio) : ''}: ${brl(y.valor_total)}, vencimento em ${dataBR(y.vencimento)}`).join('\n');
   }
   return [saud, p1,
