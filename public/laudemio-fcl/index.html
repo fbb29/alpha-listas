@@ -41,6 +41,15 @@ button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor
 .soc{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}.soc .sn{font-size:12.5px;font-weight:600;margin-bottom:4px}
 .prop{display:inline-block;margin-top:4px;font-size:11.5px;color:#8a5a00;background:rgba(214,158,46,.14);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.prop{color:#f0c36a}}.foro{display:inline-block;margin-top:4px;font-size:11.5px;color:#1f6b3a;background:rgba(46,160,90,.13);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.foro{color:#7fd6a0}}.fonte{font-size:11px;color:var(--mut);margin:-2px 0 6px}
 .envq{font-size:12.5px;color:#1f7a4d;font-weight:600}
+td.ctt{min-width:270px;max-width:360px}
+.ctt .top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ctt .rs{font-size:12px;color:var(--mut);margin-top:5px}
+details.ct{margin-top:4px}details.ct>summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--navy);list-style:none;padding:2px 0;user-select:none}
+details.ct>summary::-webkit-details-marker{display:none}details.ct>summary::before{content:"▸ "}details.ct[open]>summary::before{content:"▾ "}
+details.ct .lst{margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.ct .cl{flex-wrap:nowrap;gap:6px;margin-bottom:5px}.ct .cl .ad{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
+.ct a.btn,.ct button.ok{padding:3px 8px;font-size:11.5px;border-radius:6px}
+.ct .soc{margin-top:6px;padding-top:5px}.ct .soc .sn{font-size:12px;margin-bottom:3px}.ct .fx{font-size:12px;color:var(--mut);margin-bottom:4px}
 </style></head><body>
 <header><div class="crumb"><a href="/">Listas</a> › Laudêmio · FCL novas</div>
 <h1>Laudêmio · FCL novas</h1>
@@ -55,7 +64,7 @@ button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor
 <div id="msg"></div>
 <details class="env" id="denv"><summary id="henv">Enviados (0)</summary>
 <table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Envio</th><th>Status</th></tr></thead><tbody id="te"></tbody></table></details>
-<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: clique em “Enviar e-mail” (abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura; “Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail) ou no número do WhatsApp; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados”, com o seu nome e a hora, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
+<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: o botão de cada lead abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura (“Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail). Para mandar a um contato só, ou pelo WhatsApp, clique em “ver contatos”; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados”, com o seu nome e a hora, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
 <script src="/_app/topo.js"></script>
 <script type="module">
 import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
@@ -109,27 +118,44 @@ function abas() {
   $('tabs').innerHTML = tabs.map(([t, n, d]) => { const a = g(t); return `<button type="button" data-t="${t}" class="${t === tier ? 'on' : ''}"><b>${n} · ${a.length} lead${a.length === 1 ? '' : 's'} · ${brl(soma(a))}</b>${d}</button>`; }).join('');
   $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => { tier = b.dataset.t; try { localStorage.setItem('fcl-tier', tier); } catch (e) {} abas(); filt(); });
 }
-function botoes(g, socio, ems, tfs, vistos) {
+// cont = contador {e, w, f} de e-mails, WhatsApps e fixos (para o resumo do card recolhido)
+function botoes(g, socio, ems, tfs, vistos, cont) {
   const alvo = g.falta.length ? g.falta : g.ls, out = [];
-  for (const e of ems) { const x = String(e).trim().toLowerCase(); if (!x || vistos.has(x)) continue; vistos.add(x);
-    out.push(`<div class="cl"><a class="btn" data-c="email" data-a="${esc(e)}" href="${esc(mailto(e, alvo, socio))}">Enviar e-mail</a><button type="button" class="ok" data-c="email" data-a="${esc(e)}">OK, enviado</button><span class="em">${esc(e)}</span></div>`); }
+  for (const e of ems) { const x = String(e).trim().toLowerCase(); if (!x || vistos.has(x)) continue; vistos.add(x); cont.e++;
+    out.push(`<div class="cl"><span class="ad" title="${esc(e)}">${esc(e)}</span><a class="btn" data-c="email" data-a="${esc(e)}" href="${esc(mailto(e, alvo, socio))}">E-mail</a><button type="button" class="ok" data-c="email" data-a="${esc(e)}">OK, enviado</button></div>`); }
   for (const t of tfs) { const f = fone(t); if (!f.fmt || vistos.has(f.fmt)) continue; vistos.add(f.fmt);
-    out.push(f.wa ? `<div class="cl"><a class="btn wa" data-c="whatsapp" data-a="${esc(f.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${f.wa}">WhatsApp ${f.fmt}</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(f.fmt)}">OK, enviado</button></div>` : `<div class="cl"><span class="em">Fixo ${f.fmt}</span></div>`); }
+    if (f.wa) { cont.w++; out.push(`<div class="cl"><span class="ad">${f.fmt}</span><a class="btn wa" data-c="whatsapp" data-a="${esc(f.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${f.wa}">WhatsApp</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(f.fmt)}">OK, enviado</button></div>`); }
+    else { cont.f++; out.push(`<div class="fx">Fixo ${f.fmt}</div>`); } }
   return out.join('');
 }
+const abertos = new Set();  // cards com a lista de contatos aberta (sobrevive à atualização automática)
+const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
 function card(g, i) {
   const l = g.ls[0], d = dias(g.venc), urg = d < 7, vistos = new Set();
   const nome = nomeBR(l.responsavel);
   // um botão que abre o Mail já com todos os e-mails cadastrados (empresa e sócios) no destinatário
   const todos = [...new Set([...g.ls.flatMap(emsDe), ...g.ls.flatMap(y => socios(y).flatMap(s => s.emails || []))].map(e => String(e).trim().toLowerCase()).filter(Boolean))];
   const alvoTodos = g.falta.length ? g.falta : g.ls;
-  const btTodos = todos.length > 1 ? `<div class="cl"><a class="btn" data-c="email" data-a="${esc(todos.join(', '))}" href="${esc(mailto(todos.join(','), alvoTodos, null))}">Enviar para todos os e-mails (${todos.length})</a><button type="button" class="ok" data-c="email" data-a="${esc(todos.join(', '))}">OK, enviado</button></div>` : '';
-  let contato = btTodos + botoes(g, null, g.ls.flatMap(emsDe), g.ls.flatMap(telsDe), vistos);
+  const cont = { e: 0, w: 0, f: 0 };
+  let lista = botoes(g, null, g.ls.flatMap(emsDe), g.ls.flatMap(telsDe), vistos, cont);
   const soc = new Map(); for (const y of g.ls) for (const s of socios(y)) { const k = s.cpf || s.nome; if (!soc.has(k)) soc.set(k, s); }
-  for (const s of soc.values()) { const b = botoes(g, s.nome, s.emails || [], s.telefones || [], vistos);
-    if (b) contato += `<div class="soc"><div class="sn">Sócio: ${esc(nomeBR(s.nome))}</div>${b}</div>`; }
-  const temContato = !!contato;
-  if (!temContato) contato = '<span class="pend">contato pendente</span>';
+  let nSoc = 0;
+  for (const s of soc.values()) { const b = botoes(g, s.nome, s.emails || [], s.telefones || [], vistos, cont);
+    if (b) { nSoc++; lista += `<div class="soc"><div class="sn">Sócio: ${esc(nomeBR(s.nome))}</div>${b}</div>`; } }
+  const temContato = !!lista;
+  // card recolhido: só a ação principal + resumo; a lista completa abre em "ver contatos"
+  let principal = '';
+  if (todos.length) {
+    const dest = todos.join(','), rot = todos.length > 1 ? `Enviar para todos os e-mails (${todos.length})` : 'Enviar e-mail';
+    principal = `<div class="cl top"><a class="btn" data-c="email" data-a="${esc(todos.join(', '))}" href="${esc(mailto(dest, alvoTodos, todos.length > 1 ? null : ([...soc.values()].find(s => (s.emails || []).some(e => String(e).trim().toLowerCase() === todos[0])) || {}).nome || null))}">${rot}</a><button type="button" class="ok" data-c="email" data-a="${esc(todos.join(', '))}">OK, enviado</button></div>`;
+  } else {
+    const t1 = [...g.ls.flatMap(telsDe), ...[...soc.values()].flatMap(s => s.telefones || [])].map(fone).find(f => f.wa);
+    if (t1) principal = `<div class="cl top"><a class="btn wa" data-c="whatsapp" data-a="${esc(t1.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${t1.wa}">WhatsApp ${t1.fmt}</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(t1.fmt)}">OK, enviado</button></div>`;
+  }
+  const resumo = [cont.e && plural(cont.e, 'e-mail', 'e-mails'), cont.w && plural(cont.w, 'WhatsApp', 'WhatsApp'), cont.f && plural(cont.f, 'fixo', 'fixos'), nSoc && plural(nSoc, 'sócio', 'sócios')].filter(Boolean).join(' · ');
+  let contato = temContato
+    ? `${principal}<div class="rs">${esc(resumo)}</div><details class="ct"${abertos.has(g.k) ? ' open' : ''}><summary>ver contatos</summary><div class="lst">${lista}</div></details>`
+    : '<span class="pend">contato pendente</span>';
   const prop = (g.ls.find(y => y.proposta_alpha) || {}).proposta_alpha;
   const tagProp = prop ? `<div class="prop">Já recebeu proposta da Alpha: ${esc(prop)}</div>` : '';
   const fonteProp = g.ls.some(y => String(y.contato_fonte || '').startsWith('Proposta')) && temContato ? `<div class="fonte">contato da proposta</div>` : '';
@@ -149,7 +175,7 @@ function card(g, i) {
     `<td><div class="nm">${esc(nome)}${multi}</div>${tagProp}${tagForo}<div class="em">${esc(l.tipo_doc || '')} ${esc(l.cpf_cnpj || '')}</div><div class="em">FCL ${g.ls.map(y => esc(y.fcl)).join(', ')}</div></td>` +
     `<td class="em" style="white-space:nowrap">${g.ls.map(y => esc(y.rip) + (g.ls.length > 1 ? ' · ' + brl(y.valor_total) : '')).join('<br>')}</td>` +
     `<td class="hide-s"><div>${esc(muni)}</div>${g.ls.map(y => `<div class="em">${esc(nomeBR(limpaEnd(y.endereco)))}</div>`).join('')}</td>` +
-    `<td>${g.enviado ? envio : fonteProp + parcial + contato}</td>` +
+    `<td class="ctt">${g.enviado ? envio : fonteProp + parcial + contato}</td>` +
     `<td class="stt"><select aria-label="Status" class="s-${esc(st)}">${sel}</select>` +
     `<textarea placeholder="Observação">${esc(l.observacao || '')}</textarea><div class="ln"><span class="qm">${l.responsavel_comercial ? 'responsável: ' + esc(l.responsavel_comercial) : ''}</span><button type="button" class="sv" disabled>Salvar</button></div></td></tr>`;
 }
@@ -197,6 +223,8 @@ function ligar(tr) {
     try { for (const l of g().ls) { await post({ fcl: l.fcl, observacao: ta.value }); l.observacao = ta.value; } salvo = ta.value; tr.dataset.sujo = ''; qm.textContent = 'observação salva'; }
     catch (e) { bt.disabled = false; alert('Não salvou a observação: ' + e.message); }
   });
+  const dt = tr.querySelector('details.ct');
+  if (dt) dt.addEventListener('toggle', () => { dt.open ? abertos.add(tr.dataset.k) : abertos.delete(tr.dataset.k); });
   // clicou em Enviar: destaca o "OK, enviado" ao lado
   tr.querySelectorAll('a[data-c]').forEach(a => a.addEventListener('click', () => { const ok = a.parentElement.querySelector('button.ok'); if (ok) ok.classList.add('vez'); }));
   tr.querySelectorAll('button.ok').forEach(b => b.addEventListener('click', async () => {
