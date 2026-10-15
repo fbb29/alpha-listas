@@ -103,8 +103,8 @@ export function corpo(x, socio) {
     'Para receber a análise, é só responder este e-mail.',
     'Fico à disposição.\nAtenciosamente,'].filter(Boolean).join('\n\n');
 }
-// composição no Gmail web (o app Mail não é usado)
-export function gmail(para, x, socio) {
-  return 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(para) + '&su=' + encodeURIComponent(assunto(x)) +
-    '&body=' + encodeURIComponent(corpo(x, socio));
+// abre no app de e-mail do computador (Mail), com a assinatura da conta; vários destinatários separados por vírgula
+export function mailto(para, x, socio) {
+  const dest = String(para).split(/\s*,\s*/).filter(Boolean).map(e => encodeURIComponent(e).replace(/%40/g, '@')).join(',');
+  return 'mailto:' + dest + '?subject=' + encodeURIComponent(assunto(x)) + '&body=' + encodeURIComponent(corpo(x, socio).replace(/\n/g, '\r\n'));
 }

@@ -55,11 +55,11 @@ button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor
 <div id="msg"></div>
 <details class="env" id="denv"><summary id="henv">Enviados (0)</summary>
 <table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Envio</th><th>Status</th></tr></thead><tbody id="te"></tbody></table></details>
-<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: clique em “Enviar e-mail” (abre o Gmail com destinatário, assunto e texto prontos; “Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail) ou no número do WhatsApp; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados”, com o seu nome e a hora, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
+<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: clique em “Enviar e-mail” (abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura; “Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail) ou no número do WhatsApp; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados”, com o seu nome e a hora, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
 <script src="/_app/topo.js"></script>
 <script type="module">
 import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
-import { brl, dataBR, gmail } from '/_app/modelo_fcl.js';
+import { brl, dataBR, mailto } from '/_app/modelo_fcl.js';
 const $ = id => document.getElementById(id);
 const STATUS = [['novo', 'Novo'], ['em_contato', 'Em contato'], ['respondeu', 'Respondeu'], ['proposta', 'Proposta'], ['fechado', 'Fechado'], ['descartado', 'Descartado']];
 $('fst').innerHTML += STATUS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
@@ -112,7 +112,7 @@ function abas() {
 function botoes(g, socio, ems, tfs, vistos) {
   const alvo = g.falta.length ? g.falta : g.ls, out = [];
   for (const e of ems) { const x = String(e).trim().toLowerCase(); if (!x || vistos.has(x)) continue; vistos.add(x);
-    out.push(`<div class="cl"><a class="btn" data-c="email" data-a="${esc(e)}" target="_blank" rel="noopener" href="${esc(gmail(e, alvo, socio))}">Enviar e-mail</a><button type="button" class="ok" data-c="email" data-a="${esc(e)}">OK, enviado</button><span class="em">${esc(e)}</span></div>`); }
+    out.push(`<div class="cl"><a class="btn" data-c="email" data-a="${esc(e)}" href="${esc(mailto(e, alvo, socio))}">Enviar e-mail</a><button type="button" class="ok" data-c="email" data-a="${esc(e)}">OK, enviado</button><span class="em">${esc(e)}</span></div>`); }
   for (const t of tfs) { const f = fone(t); if (!f.fmt || vistos.has(f.fmt)) continue; vistos.add(f.fmt);
     out.push(f.wa ? `<div class="cl"><a class="btn wa" data-c="whatsapp" data-a="${esc(f.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${f.wa}">WhatsApp ${f.fmt}</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(f.fmt)}">OK, enviado</button></div>` : `<div class="cl"><span class="em">Fixo ${f.fmt}</span></div>`); }
   return out.join('');
@@ -120,10 +120,10 @@ function botoes(g, socio, ems, tfs, vistos) {
 function card(g, i) {
   const l = g.ls[0], d = dias(g.venc), urg = d < 7, vistos = new Set();
   const nome = nomeBR(l.responsavel);
-  // um botão que abre o Gmail já com todos os e-mails cadastrados (empresa e sócios) no destinatário
+  // um botão que abre o Mail já com todos os e-mails cadastrados (empresa e sócios) no destinatário
   const todos = [...new Set([...g.ls.flatMap(emsDe), ...g.ls.flatMap(y => socios(y).flatMap(s => s.emails || []))].map(e => String(e).trim().toLowerCase()).filter(Boolean))];
   const alvoTodos = g.falta.length ? g.falta : g.ls;
-  const btTodos = todos.length > 1 ? `<div class="cl"><a class="btn" data-c="email" data-a="${esc(todos.join(', '))}" target="_blank" rel="noopener" href="${esc(gmail(todos.join(','), alvoTodos, null))}">Enviar para todos os e-mails (${todos.length})</a><button type="button" class="ok" data-c="email" data-a="${esc(todos.join(', '))}">OK, enviado</button></div>` : '';
+  const btTodos = todos.length > 1 ? `<div class="cl"><a class="btn" data-c="email" data-a="${esc(todos.join(', '))}" href="${esc(mailto(todos.join(','), alvoTodos, null))}">Enviar para todos os e-mails (${todos.length})</a><button type="button" class="ok" data-c="email" data-a="${esc(todos.join(', '))}">OK, enviado</button></div>` : '';
   let contato = btTodos + botoes(g, null, g.ls.flatMap(emsDe), g.ls.flatMap(telsDe), vistos);
   const soc = new Map(); for (const y of g.ls) for (const s of socios(y)) { const k = s.cpf || s.nome; if (!soc.has(k)) soc.set(k, s); }
   for (const s of soc.values()) { const b = botoes(g, s.nome, s.emails || [], s.telefones || [], vistos);
