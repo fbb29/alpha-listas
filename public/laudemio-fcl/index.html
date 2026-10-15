@@ -39,7 +39,7 @@ details.env table{opacity:.92}h2.ae{font:600 17px/1.3 Georgia,serif;color:var(--
 button.ok{border:1px solid #1f7a4d;background:transparent;color:#1f7a4d;border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
 button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor:default}
 .soc{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}.soc .sn{font-size:12.5px;font-weight:600;margin-bottom:4px}
-.prop{display:inline-block;margin-top:4px;font-size:11.5px;color:#8a5a00;background:rgba(214,158,46,.14);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.prop{color:#f0c36a}}.fonte{font-size:11px;color:var(--mut);margin:-2px 0 6px}
+.prop{display:inline-block;margin-top:4px;font-size:11.5px;color:#8a5a00;background:rgba(214,158,46,.14);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.prop{color:#f0c36a}}.foro{display:inline-block;margin-top:4px;font-size:11.5px;color:#1f6b3a;background:rgba(46,160,90,.13);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.foro{color:#7fd6a0}}.fonte{font-size:11px;color:var(--mut);margin:-2px 0 6px}
 .envq{font-size:12.5px;color:#1f7a4d;font-weight:600}
 </style></head><body>
 <header><div class="crumb"><a href="/">Listas</a> › Laudêmio · FCL novas</div>
@@ -78,6 +78,15 @@ const telsDe = l => [l.telefone_1, l.telefone_2, l.telefone_3].filter(Boolean);
 const emsDe = l => [l.email_1, l.email_2].filter(Boolean);
 const socios = l => Array.isArray(l.contatos_socios) ? l.contatos_socios : [];
 
+// crédito de foro por RIP (extrato da SPU): [crédito a restituir, redução anual, confiança A/B/D]
+let FORO = null;
+async function lerForo() {
+  if (FORO) return FORO;
+  try { const r = await fetch('/data/foro-credito.bin', { cache: 'no-store' });
+    const s = new Blob([await r.arrayBuffer()]).stream().pipeThrough(new DecompressionStream('gzip'));
+    FORO = JSON.parse(await new Response(s).text()); } catch (e) { FORO = {}; }
+  return FORO;
+}
 async function lerLeads() {
   const r = await fetch('/api/fcl', { cache: 'no-store' }); versao(r);
   const j = await r.json().catch(() => ({}));
@@ -124,6 +133,7 @@ function card(g, i) {
   const prop = (g.ls.find(y => y.proposta_alpha) || {}).proposta_alpha;
   const tagProp = prop ? `<div class="prop">Já recebeu proposta da Alpha: ${esc(prop)}</div>` : '';
   const fonteProp = g.ls.some(y => String(y.contato_fonte || '').startsWith('Proposta')) && temContato ? `<div class="fonte">contato da proposta</div>` : '';
+  const tagForo = g.ls.filter(y => Array.isArray(y.foro)).map(y => `<div class="foro">Crédito de foro${g.ls.length > 1 ? ' · RIP ' + esc(y.rip) : ''}: ${brl(y.foro[0])} a restituir · redução de ${brl(y.foro[1])}/ano${y.foro[2] === 'D' ? ' · estimativa por vizinhos (não vai no e-mail)' : ''}</div>`).join('');
   const multi = g.ls.length > 1 ? `<span class="tag">mesmo titular de ${g.ls.length} imóveis</span>` : '';
   const st = l.status_comercial || 'novo';
   const sel = STATUS.map(([v, t]) => `<option value="${v}"${v === st ? ' selected' : ''}>${t}</option>`).join('');
@@ -136,7 +146,7 @@ function card(g, i) {
     data-t="${esc(norm([nome, l.responsavel, l.cpf_cnpj, String(l.cpf_cnpj || '').replace(/\D/g, ''), muni, ...g.ls.flatMap(y => [y.rip, y.fcl, limpaEnd(y.endereco)]), ...g.ls.flatMap(emsDe), ...[...soc.values()].map(s => s.nome)].join(' ')))}">` +
     `<td class="n">${i + 1}</td><td class="v"><b>${brl(g.valor)}</b><div class="em">Tier ${esc([...new Set(g.ls.map(y => y.tier))].join('/'))}</div></td>` +
     `<td class="venc">${dataBR(g.venc)}<br><span class="dias${urg ? ' urg' : ''}">${d < 0 ? `venceu há ${-d} dia${d === -1 ? '' : 's'}` : d === 0 ? 'vence hoje' : `vence em ${d} dia${d === 1 ? '' : 's'}`}</span></td>` +
-    `<td><div class="nm">${esc(nome)}${multi}</div>${tagProp}<div class="em">${esc(l.tipo_doc || '')} ${esc(l.cpf_cnpj || '')}</div><div class="em">FCL ${g.ls.map(y => esc(y.fcl)).join(', ')}</div></td>` +
+    `<td><div class="nm">${esc(nome)}${multi}</div>${tagProp}${tagForo}<div class="em">${esc(l.tipo_doc || '')} ${esc(l.cpf_cnpj || '')}</div><div class="em">FCL ${g.ls.map(y => esc(y.fcl)).join(', ')}</div></td>` +
     `<td class="em" style="white-space:nowrap">${g.ls.map(y => esc(y.rip) + (g.ls.length > 1 ? ' · ' + brl(y.valor_total) : '')).join('<br>')}</td>` +
     `<td class="hide-s"><div>${esc(muni)}</div>${g.ls.map(y => `<div class="em">${esc(nomeBR(limpaEnd(y.endereco)))}</div>`).join('')}</td>` +
     `<td>${g.enviado ? envio : fonteProp + parcial + contato}</td>` +
@@ -204,8 +214,9 @@ async function carregar(manual) {
   if (document.querySelector('tr[data-sujo="1"]') && !manual) return;
   $('atual').disabled = true;
   try {
-    const j = await lerLeads();
+    const [j, fo] = await Promise.all([lerLeads(), lerForo()]);
     leads = (j.leads || []).filter(l => l.status_comercial !== 'descartado');
+    for (const l of leads) l.foro = fo[l.rip] || null;
     $('resumo').textContent = `${leads.length} leads · ${brl(soma(leads))} em laudêmio · base do robô atualizada todo dia · lida às ${quando(new Date())}`;
     render();
   } catch (e) { $('msg').textContent = 'Não foi possível ler os leads (' + e.message + '). Tente “Atualizar”.'; $('resumo').textContent = ''; }
