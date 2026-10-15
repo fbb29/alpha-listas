@@ -165,7 +165,7 @@ function card(g, i) {
     ? `${principal}<div class="rs">${esc(resumo)}</div><details class="ct"${abertos.has(g.k) ? ' open' : ''}><summary>ver contatos</summary><div class="lst">${lista}</div></details>`
     : '<span class="pend">contato pendente</span>';
   const prop = (g.ls.find(y => y.proposta_alpha) || {}).proposta_alpha;
-  const tagProp = prop ? `<div class="prop">Já recebeu proposta da Alpha: ${esc(prop)}</div>` : '';
+  const tagProp = prop ? (String(prop).startsWith('CLIENTE · ') ? `<div class="prop" style="font-weight:600">Cliente da Alpha: ${esc(String(prop).slice(10))}</div>` : `<div class="prop">Já recebeu proposta da Alpha: ${esc(prop)}</div>`) : '';
   const fonteProp = g.ls.some(y => String(y.contato_fonte || '').startsWith('Proposta')) && temContato ? `<div class="fonte">contato da proposta</div>` : '';
   const tagForo = g.ls.filter(y => Array.isArray(y.foro)).map(y => `<div class="foro">Crédito de foro${g.ls.length > 1 ? ' · RIP ' + esc(y.rip) : ''}: ${brl(y.foro[0])} a restituir · redução de ${brl(y.foro[1])}/ano${y.foro[2] === 'D' ? ' · estimativa por vizinhos (não vai no e-mail)' : ''}</div>`).join('');
   const multi = g.ls.length > 1 ? `<span class="tag">mesmo titular de ${g.ls.length} imóveis</span>` : '';
