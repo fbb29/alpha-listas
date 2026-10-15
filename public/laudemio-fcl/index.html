@@ -72,7 +72,7 @@ details.ct .lst{margin-top:6px;padding:8px 10px;border:1px solid var(--line);bor
 <section id="sen" hidden><h2 class="ae" id="henv">Enviados</h2>
 <table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Envios (quem, quando, como)</th><th>Status</th></tr></thead><tbody id="te"></tbody></table>
 <div id="msg2" style="padding:30px;text-align:center;color:var(--mut)"></div></section>
-<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: o botão de cada lead abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura (“Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail). Para mandar a um contato só, ou pelo WhatsApp, clique em “ver contatos”; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados” (botão no topo), com o seu nome, a hora, o canal e o destinatário, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
+<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: o botão de cada lead abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura (“Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail). Para mandar a um contato só, ou pelo WhatsApp, clique em “ver contatos”; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados” (botão no topo), com o seu nome, a hora, o canal e o destinatário, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Para devolver um lead enviado para “A enviar”, mude o status dele para “Novo”. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
 <script src="/_app/topo.js"></script>
 <script type="module">
 import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
@@ -176,7 +176,8 @@ function card(g, i) {
   for (const y of g.ls) for (const e of (Array.isArray(y.envios) ? y.envios : [])) hist.push(e);
   const vistosH = new Set();
   const histTxt = hist.sort((a, b) => String(b.em).localeCompare(String(a.em))).filter(e => { const k = e.em + e.por + e.canal; if (vistosH.has(k)) return false; vistosH.add(k); return true; })
-    .map(e => `<div><b>${esc(e.por || '')}</b> · ${hora(e.em)} · ${e.canal === 'whatsapp' ? 'WhatsApp' : 'e-mail'}${e.alvo ? ' para ' + esc(e.alvo) : ''}</div>`).join('');
+    .map(e => e.canal === 'voltou' ? `<div><b>${esc(e.por || '')}</b> · ${hora(e.em)} · voltou para “A enviar”</div>`
+      : `<div><b>${esc(e.por || '')}</b> · ${hora(e.em)} · ${e.canal === 'whatsapp' ? 'WhatsApp' : 'e-mail'}${e.alvo ? ' para ' + esc(e.alvo) : ''}</div>`).join('');
   const envio = ult ? `<div class="hist">${histTxt || `<div><b>${esc(ult.enviado_por || '')}</b> · ${hora(ult.enviado_em)}</div>`}</div>` : '';
   const parcial = !g.enviado && g.falta.length < g.ls.length ? `<div class="em">${g.ls.length - g.falta.length} de ${g.ls.length} FCLs já enviadas</div>` : '';
   const muni = [...new Set(g.ls.map(y => nomeBR(y.municipio || '')))].join(', ');
@@ -230,6 +231,7 @@ function ligar(tr) {
     try { for (const l of g().ls) { const j = await post({ fcl: l.fcl, status_comercial: novo }); Object.assign(l, j.lead || { status_comercial: novo }); }
       tr.dataset.st = novo; sel.className = 's-' + novo; qm.textContent = `responsável: ${me.nome} · salvo`;
       if (novo === 'descartado') { leads = leads.filter(l => !g().ls.includes(l)); render(); return; }
+      if (novo === 'novo' && tr.closest('#te')) { render(); return; }   // voltou para "A enviar"
     } catch (e) { sel.value = antigo; alert('Não salvou o status: ' + e.message); }
     sel.disabled = false; filt();
   });
