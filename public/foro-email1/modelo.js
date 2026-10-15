@@ -2,6 +2,8 @@
 // 0 email, 1 email2, 2 titular, 3 saudação, 4 pj, 5 nº imóveis, 6 município(s), 7 endereço curto,
 // 8 RIP, 9 foro cobrado 2026, 10 foro correto, 11 redução/ano, 12 crédito, 13 tel, 14 tel2, 15 recebeu em set.
 // (16 é um campo antigo e não é usado: a divisão entre as três pessoas é feita em lista.html.)
+// 17 (posto por lista.html a partir de data/foro-email1/rips.bin): um item por RIP com crédito —
+//    [rip, endereço curto, município, foro cobrado, foro correto, redução/ano, crédito]; a soma bate com 11 e 12.
 import { nomeBR, fone } from '/_app/canal.js';
 export const brl = x => 'R$ ' + Number(x).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -24,6 +26,14 @@ export function corpo(r) {
             : `Analisamos o extrato da SPU ${alvo} em ${mun} (RIP ${rip}).`;
     p2 = `O foro cobrado em 2026 foi de ${brl(fa)}. Pelos limites legais de reajuste, o valor correto seria de cerca de ${brl(fr)}. A diferença se repete todo ano.`;
     p3 = pj ? 'Nossa estimativa preliminar para o imóvel:' : 'Nossa estimativa preliminar para o seu imóvel:';
+  } else if (Array.isArray(r[17]) && r[17].length) {
+    // vários imóveis: o crédito de cada RIP e, no fim, a soma
+    const ls = r[17];
+    const alvo = pj ? `dos imóveis da ${tit}` : 'dos seus imóveis';
+    p1 = `Analisamos o extrato da SPU ${alvo} em ${mun}. Em ${ls.length === 1 ? 'um' : ls.length} deles o foro cobrado está acima dos limites legais de reajuste. Nossa estimativa preliminar, imóvel a imóvel:`;
+    p2 = ls.map(x => `• RIP ${x[0]}${x[1] ? ' (' + x[1] + (x[2] && ls.some(y => y[2] !== x[2]) ? ', ' + x[2] : '') + ')' : ''}: redução de ${brl(x[5])} por ano e ${brl(x[6])} pagos a mais, que podem ser restituídos`).join('\n');
+    p3 = ls.length > 1 ? `No total: redução de ${brl(red)} por ano no foro e ${brl(cred)} em valores pagos a mais, que podem ser restituídos.` : '';
+    return [saud, p1, p2, p3, ...fecho(n)].filter(Boolean).join('\n\n');
   } else {
     const alvo = pj ? `dos ${n} imóveis da ${tit}` : `dos seus ${n} imóveis`;
     p1 = `Analisamos o extrato da SPU ${alvo} em ${mun} (entre eles o RIP ${rip}).`;
@@ -31,10 +41,14 @@ export function corpo(r) {
   }
   return [saud, p1, p2,
     p3 + '\n• Redução do foro: ' + brl(red) + ' por ano\n• Valores pagos a mais, que podem ser restituídos: ' + brl(cred),
+    ...fecho(n)].filter(Boolean).join('\n\n');
+}
+function fecho(n) {
+  return [
     'A Alpha Soluções trabalha com imóveis da União. Nos últimos 180 dias, protocolamos 290 pedidos de revisão de foro na SPU em Alphaville.',
     'A análise completa do seu caso não tem custo. Só cobramos se a SPU reduzir o foro ou devolver valores, e apenas no fim do processo.',
     'Se quiser receber o relatório detalhado' + (n === 1 ? ' do seu imóvel' : ' dos seus imóveis') + ', é só responder este e-mail.',
-    'Fico à disposição.\nAtenciosamente,'].filter(Boolean).join('\n\n');
+    'Fico à disposição.\nAtenciosamente,'];
 }
 
 export function mailto(para, r) {

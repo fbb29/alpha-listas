@@ -58,12 +58,21 @@ async function chunk(i) {
   return JSON.parse(txt);
 }
 let rows;
+// crédito de cada RIP do contato (vários imóveis): o e-mail lista imóvel a imóvel e fecha com a soma
+async function ripsPorContato() {
+  try {
+    const r = await fetch(`/data/${LISTA}/rips.bin`, { cache: 'no-store' });
+    if (!r.ok) return {};
+    const s = new Blob([new Uint8Array(await r.arrayBuffer())]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return JSON.parse(await new Response(s).text());
+  } catch (e) { return {}; }
+}
 // divisão em 3 (14/10): do maior crédito para o menor, distribuição em ida e volta K, L, H, H, L, K — mesmo número de contatos e crédito equivalente.
 // A mesma divisão está no servidor (middleware.js, DONO_FORO): quem não é admin só registra contato da própria lista.
 const ORDEM = ['K', 'L', 'H', 'H', 'L', 'K'];
 try {
-  const [dados] = await Promise.all([Promise.all([...Array(NCHUNKS).keys()].map(chunk)), carregarAvisos()]);
-  rows = dados.flat()
+  const [dados, porRip] = await Promise.all([Promise.all([...Array(NCHUNKS).keys()].map(chunk)), ripsPorContato(), carregarAvisos()]);
+  rows = dados.flat().map(r => { if (porRip[r[0]]) r[17] = porRip[r[0]]; return r; })
     .sort((a, b) => (b[12] - a[12]) || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
     .filter((r, i) => ORDEM[i % 6] === LETRA[p])
     .filter(r => !oculto(LISTA, r[0]));   // retirados depois da divisão (ex.: cliente com processo na SPU), sem mexer na divisão
