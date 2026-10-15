@@ -34,8 +34,14 @@ a.wa{background:#1f7a4d}@media (prefers-color-scheme:dark){a.btn{color:#14191b}a
 .s-novo{color:var(--ink)}.s-em_contato{color:#9a6b00}.s-respondeu{color:#1f5fa8}.s-proposta{color:#7a3fa0}.s-fechado{color:#1f7a4d}.s-descartado{color:var(--mut)}
 #msg{padding:40px;text-align:center;color:var(--mut)}
 @media (max-width:760px){header,main{padding-left:16px;padding-right:16px}.hide-s{display:none}}
-details.env{margin-top:26px}details.env summary{cursor:pointer;font:600 15px/1.3 Georgia,serif;color:var(--mut);padding:8px 0}
-details.env table{opacity:.92}h2.ae{font:600 17px/1.3 Georgia,serif;color:var(--navy);margin:6px 0 10px}
+h2.ae{font:600 17px/1.3 Georgia,serif;color:var(--navy);margin:6px 0 10px}
+.vista{display:flex;gap:0;margin-top:14px;border:1px solid var(--navy);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
+.vista button{border:0;background:var(--card);color:var(--navy);padding:10px 22px;font:600 15px/1.2 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;cursor:pointer}
+.vista button+button{border-left:1px solid var(--navy)}.vista button.on{background:var(--navy);color:#fff}
+@media (prefers-color-scheme:dark){.vista button.on{color:#14191b}}
+.vista button small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:2px}
+.hist{font-size:12.5px;line-height:1.45}.hist div{padding:3px 0;border-top:1px dashed var(--line)}.hist div:first-child{border-top:0}
+.hist b{color:#1f7a4d}
 button.ok{border:1px solid #1f7a4d;background:transparent;color:#1f7a4d;border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
 button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor:default}
 .soc{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}.soc .sn{font-size:12.5px;font-weight:600;margin-bottom:4px}
@@ -54,17 +60,19 @@ details.ct .lst{margin-top:6px;padding:8px 10px;border:1px solid var(--line);bor
 <header><div class="crumb"><a href="/">Listas</a> › Laudêmio · FCL novas</div>
 <h1>Laudêmio · FCL novas</h1>
 <div class="sub" id="resumo">Carregando…</div>
+<div class="vista" id="vista"><button type="button" data-v="ae" class="on"><span id="vae">A enviar</span><small id="vae2"></small></button><button type="button" data-v="en"><span id="ven">Enviados</span><small id="ven2"></small></button></div>
 <div class="tabs" id="tabs"></div>
 <div class="bar"><input type="search" id="q" placeholder="Buscar por nome, CPF/CNPJ, RIP, município ou endereço">
 <select id="fst" aria-label="Status"><option value="">Todos os status</option></select>
 <label class="f"><input type="checkbox" id="fc"> só com contato</label><label class="f"><input type="checkbox" id="f7"> vence em menos de 7 dias</label><label class="f"><input type="checkbox" id="fp"> só quem já recebeu proposta</label>
 <span class="prog" id="prog"></span><button type="button" class="at" id="atual">Atualizar</button></div></header>
-<main><h2 class="ae" id="hae">A enviar</h2>
+<main><section id="sae"><h2 class="ae" id="hae">A enviar</h2>
 <table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Contato</th><th>Status</th></tr></thead><tbody id="tb"></tbody></table>
-<div id="msg"></div>
-<details class="env" id="denv"><summary id="henv">Enviados (0)</summary>
-<table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Envio</th><th>Status</th></tr></thead><tbody id="te"></tbody></table></details>
-<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: o botão de cada lead abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura (“Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail). Para mandar a um contato só, ou pelo WhatsApp, clique em “ver contatos”; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados”, com o seu nome e a hora, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
+<div id="msg"></div></section>
+<section id="sen" hidden><h2 class="ae" id="henv">Enviados</h2>
+<table><thead><tr><th>#</th><th class="v">Valor</th><th>Vencimento</th><th>Responsável · CPF/CNPJ</th><th>RIP</th><th class="hide-s">Município e endereço</th><th>Envios (quem, quando, como)</th><th>Status</th></tr></thead><tbody id="te"></tbody></table>
+<div id="msg2" style="padding:30px;text-align:center;color:var(--mut)"></div></section>
+<p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: o botão de cada lead abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura (“Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail). Para mandar a um contato só, ou pelo WhatsApp, clique em “ver contatos”; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados” (botão no topo), com o seu nome, a hora, o canal e o destinatário, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
 <script src="/_app/topo.js"></script>
 <script type="module">
 import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
@@ -164,12 +172,16 @@ function card(g, i) {
   const st = l.status_comercial || 'novo';
   const sel = STATUS.map(([v, t]) => `<option value="${v}"${v === st ? ' selected' : ''}>${t}</option>`).join('');
   const ult = g.ls.map(y => y.enviado_em ? y : null).filter(Boolean).sort((a, b) => String(b.enviado_em).localeCompare(String(a.enviado_em)))[0];
-  const envio = ult ? `<div class="envq">Enviado por ${esc(ult.enviado_por || '')} em ${hora(ult.enviado_em)}</div>` +
-    (Array.isArray(ult.envios) && ult.envios.length ? `<div class="em">${esc(ult.envios[ult.envios.length - 1].canal === 'whatsapp' ? 'por WhatsApp' : 'por e-mail')}</div>` : '') : '';
+  const hist = [];
+  for (const y of g.ls) for (const e of (Array.isArray(y.envios) ? y.envios : [])) hist.push(e);
+  const vistosH = new Set();
+  const histTxt = hist.sort((a, b) => String(b.em).localeCompare(String(a.em))).filter(e => { const k = e.em + e.por + e.canal; if (vistosH.has(k)) return false; vistosH.add(k); return true; })
+    .map(e => `<div><b>${esc(e.por || '')}</b> · ${hora(e.em)} · ${e.canal === 'whatsapp' ? 'WhatsApp' : 'e-mail'}${e.alvo ? ' para ' + esc(e.alvo) : ''}</div>`).join('');
+  const envio = ult ? `<div class="hist">${histTxt || `<div><b>${esc(ult.enviado_por || '')}</b> · ${hora(ult.enviado_em)}</div>`}</div>` : '';
   const parcial = !g.enviado && g.falta.length < g.ls.length ? `<div class="em">${g.ls.length - g.falta.length} de ${g.ls.length} FCLs já enviadas</div>` : '';
   const muni = [...new Set(g.ls.map(y => nomeBR(y.municipio || '')))].join(', ');
   return `<tr data-k="${esc(g.k)}" data-tier="${esc([...new Set(g.ls.map(y => y.tier))].join(' '))}" data-c="${temContato ? 1 : 0}" data-d="${d}" data-st="${esc(st)}" data-p="${prop ? 1 : 0}" class="${urg ? 'urg' : ''}"
-    data-t="${esc(norm([nome, l.responsavel, l.cpf_cnpj, String(l.cpf_cnpj || '').replace(/\D/g, ''), muni, ...g.ls.flatMap(y => [y.rip, y.fcl, limpaEnd(y.endereco)]), ...g.ls.flatMap(emsDe), ...[...soc.values()].map(s => s.nome)].join(' ')))}">` +
+    data-t="${esc(norm([nome, l.responsavel, l.cpf_cnpj, String(l.cpf_cnpj || '').replace(/\D/g, ''), muni, ...g.ls.flatMap(y => [y.rip, y.fcl, limpaEnd(y.endereco)]), ...g.ls.flatMap(emsDe), ...[...soc.values()].map(s => s.nome), ...g.ls.flatMap(y => (Array.isArray(y.envios) ? y.envios : []).map(e => e.por)), ...g.ls.map(y => y.enviado_por || '')].join(' ')))}">` +
     `<td class="n">${i + 1}</td><td class="v"><b>${brl(g.valor)}</b><div class="em">Tier ${esc([...new Set(g.ls.map(y => y.tier))].join('/'))}</div></td>` +
     `<td class="venc">${dataBR(g.venc)}<br><span class="dias${urg ? ' urg' : ''}">${d < 0 ? `venceu há ${-d} dia${d === -1 ? '' : 's'}` : d === 0 ? 'vence hoje' : `vence em ${d} dia${d === 1 ? '' : 's'}`}</span></td>` +
     `<td><div class="nm">${esc(nome)}${multi}</div>${tagProp}${tagForo}<div class="em">${esc(l.tipo_doc || '')} ${esc(l.cpf_cnpj || '')}</div><div class="em">FCL ${g.ls.map(y => esc(y.fcl)).join(', ')}</div></td>` +
@@ -189,8 +201,12 @@ function filt() {
   });
   $('hae').textContent = `A enviar (${cont.tb[0]} · ${brl(cont.tb[1])})`;
   $('henv').textContent = `Enviados (${cont.te[0]} · ${brl(cont.te[1])})`;
-  $('prog').innerHTML = `Mostrando <b>${cont.tb[0] + cont.te[0]}</b> · ${brl(cont.tb[1] + cont.te[1])}`;
+  $('vae').textContent = `A enviar · ${cont.tb[0]}`; $('vae2').textContent = brl(cont.tb[1]);
+  $('ven').textContent = `Enviados · ${cont.te[0]}`; $('ven2').textContent = brl(cont.te[1]);
+  const v = vista === 'en' ? 'te' : 'tb';
+  $('prog').innerHTML = `Mostrando <b>${cont[v][0]}</b> · ${brl(cont[v][1])}`;
   $('msg').textContent = cont.tb[0] ? '' : (leads.length ? 'Nada a enviar com esses filtros.' : '');
+  $('msg2').textContent = cont.te[0] ? '' : 'Nenhum envio com esses filtros.';
 }
 async function post(corpo) {
   const r = await fetch('/api/fcl', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(corpo) }); versao(r);
@@ -250,8 +266,19 @@ async function carregar(manual) {
   } catch (e) { $('msg').textContent = 'Não foi possível ler os leads (' + e.message + '). Tente “Atualizar”.'; $('resumo').textContent = ''; }
   $('atual').disabled = false;
 }
+// vista: "A enviar" ou "Enviados" (lembrada neste navegador)
+let vista = 'ae';
+try { vista = localStorage.getItem('fcl-vista') || 'ae'; } catch (e) {}
+function mostrar() {
+  $('sae').hidden = vista !== 'ae'; $('sen').hidden = vista !== 'en';
+  $('vista').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
+  $('fc').parentElement.style.display = vista === 'ae' ? '' : 'none';
+  filt();
+}
+$('vista').querySelectorAll('button').forEach(b => b.onclick = () => { vista = b.dataset.v; try { localStorage.setItem('fcl-vista', vista); } catch (e) {} mostrar(); });
 ['q', 'fst', 'fc', 'f7', 'fp'].forEach(id => $(id).addEventListener(id === 'q' ? 'input' : 'change', filt));
 $('atual').onclick = () => { if (document.querySelector('tr[data-sujo="1"]') && !confirm('Há observação não salva. Atualizar e perder o texto?')) return; carregar(true); };
 await carregar(true);
+mostrar();
 setInterval(() => carregar(false), 300000);
 </script></body></html>

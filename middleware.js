@@ -361,7 +361,7 @@ export default async function middleware(req, ctx) {
           const canal = b.canal === 'whatsapp' ? 'whatsapp' : 'email';
           const leads = [];
           for (const f of fcls) {
-            const r = await fetch(API, { method: 'POST', headers: { 'x-site-token': tok, 'content-type': 'application/json' }, body: JSON.stringify({ fcl: f, enviado: true, enviado_por: user.nome, canal }) });
+            const r = await fetch(API, { method: 'POST', headers: { 'x-site-token': tok, 'content-type': 'application/json' }, body: JSON.stringify({ fcl: f, enviado: true, enviado_por: user.nome, canal, alvo: String(b.alvo || '').slice(0, 300) }) });
             const t = await r.text();
             if (!r.ok) return json({ erro: `API de leads respondeu ${r.status} na FCL ${f}: ${t.slice(0, 200)}`, gravadas: leads.map((l) => l.fcl) }, r.status === 404 ? 404 : 502);
             try { leads.push(JSON.parse(t).lead); } catch (e) { leads.push({ fcl: f }); }
