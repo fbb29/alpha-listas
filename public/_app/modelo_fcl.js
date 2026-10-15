@@ -16,7 +16,7 @@ export function assunto(x) {
 export function corpo(x, socio) {
   const ls = lista(x), l = ls[0];
   const pj = l.tipo_doc === 'CNPJ', nome = nomeBR(l.responsavel);
-  const saud = socio ? `Prezado(a) ${nomeBR(socio).split(' ')[0]},` : pj ? `Prezados representantes da ${nome},` : `Prezado(a) ${nome.split(' ')[0]},`;
+  let saud = socio ? `Prezado(a) ${nomeBR(socio).split(' ')[0]},` : pj ? `Prezados representantes da ${nome},` : `Prezado(a) ${nome.split(' ')[0]},`;
   const deQuem = socio || pj ? ` em nome da ${nome}` : '';
   let p1;
   if (ls.length === 1) {
@@ -26,12 +26,24 @@ export function corpo(x, socio) {
     p1 = `A SPU emitiu os cálculos de laudêmio${deQuem} referentes à transferência de ${ls.length} imóveis, que somam ${brl(soma(ls))}:\n` +
       ls.map(y => `• RIP ${y.rip}${y.municipio ? ', em ' + nomeBR(y.municipio) : ''}: ${brl(y.valor_total)}, vencimento em ${dataBR(y.vencimento)}`).join('\n');
   }
+  // lead que já recebeu proposta da Alpha e não fechou: abertura reconhece o contato anterior
+  const prop = (ls.find(y => y.proposta_alpha) || {}).proposta_alpha;
+  if (prop) {
+    const m = String(prop).match(/última em (\d{2}\/\d{2}\/\d{4})/);
+    const quem = socio ? nomeBR(socio).split(' ')[0] : pj ? nome : nome.split(' ')[0];
+    const quando = m ? `Em ${m[1]}` : 'Recentemente';
+    saud = '';
+    p1 = ls.length === 1
+      ? `Olá, ${quem}. ${quando} a Alpha Soluções enviou uma proposta para o imóvel RIP ${l.rip}. Agora saiu a FCL de laudêmio desse imóvel, no valor de ${brl(l.valor_total)}, com vencimento em ${dataBR(l.vencimento)}.`
+      : `Olá, ${quem}. ${quando} a Alpha Soluções enviou uma proposta para os imóveis RIP ${ls.map(y => y.rip).join(', ')}. Agora saíram as FCLs de laudêmio desses imóveis, que somam ${brl(soma(ls))}:\n` +
+        ls.map(y => `• RIP ${y.rip}${y.municipio ? ', em ' + nomeBR(y.municipio) : ''}: ${brl(y.valor_total)}, vencimento em ${dataBR(y.vencimento)}`).join('\n');
+  }
   return [saud, p1,
     'Se este laudêmio foi emitido para transferir o imóvel para uma holding, recomendamos fortemente que fale conosco antes de pagar. Nesse tipo de operação existem soluções que podem ser bem mais vantajosas, e vale avaliar o caso antes de recolher a guia.',
     'O laudêmio é calculado sobre a avaliação que a SPU faz do terreno. Em boa parte dos casos é possível reduzir esse valor, seja por erro na avaliação ou no cálculo, seja por hipóteses já reconhecidas pela própria SPU. A análise precisa ser feita antes do vencimento: depois que o laudêmio é pago, não há mais o que fazer.',
     `A Alpha Soluções trabalha com imóveis da União. A análise do caso não tem custo. Só cobramos se o laudêmio for reduzido, e apenas no fim do processo.`,
     'Para receber a análise, é só responder este e-mail.',
-    'Fico à disposição.\nAtenciosamente,'].join('\n\n');
+    'Fico à disposição.\nAtenciosamente,'].filter(Boolean).join('\n\n');
 }
 // composição no Gmail web (o app Mail não é usado)
 export function gmail(para, x, socio) {
