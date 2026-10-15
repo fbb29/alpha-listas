@@ -1,0 +1,212 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>CND de obra · decadente</title><style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a30;--mut:#6b7479;--navy:#2C4C57;--gold:#B99042;--line:#e4e1d8;--done:#eef3ee;--red:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#14191b;--card:#1d2427;--ink:#e8ecec;--mut:#9aa4a8;--navy:#7fb0bf;--gold:#d2ad62;--line:#2c3539;--done:#1f2b22;--red:#f08a8a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+header{position:sticky;top:0;z-index:2;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 24px 14px}
+.crumb{font-size:13px;color:var(--mut);margin-bottom:6px}.crumb a{color:inherit}
+h1{margin:0 0 4px;font:600 20px/1.2 Georgia,serif;color:var(--navy)}.sub{color:var(--mut);font-size:13px}
+.tabs{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;text-align:left;line-height:1.3}
+.tabs button b{display:block;font-size:14px;color:var(--navy)}.tabs button.on{border-color:var(--navy);box-shadow:inset 0 -3px 0 var(--gold)}
+.bar{display:flex;gap:14px;align-items:center;margin-top:12px;flex-wrap:wrap}
+input[type=search]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:14px}
+select{padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:13px}
+.prog{font-size:13px;color:var(--mut)}.prog b{color:var(--gold)}
+label.f{font-size:13px;color:var(--mut);display:flex;gap:6px;align-items:center}
+button.at{border:1px solid var(--navy);background:transparent;color:var(--navy);border-radius:7px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+main{padding:12px 24px 40px;max-width:1500px;margin:0 auto}table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{text-align:left;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--mut);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--card)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.urg td:first-child{box-shadow:inset 3px 0 0 var(--red)}tr.fim td{background:var(--done)}tr.fim td:not(:last-child){opacity:.75}
+td.n{color:var(--mut);font-variant-numeric:tabular-nums;width:40px}.v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nm{font-weight:600}.em{color:var(--mut);font-size:12.5px}.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:10px;border:1px solid var(--gold);color:var(--gold);margin-left:6px}
+.venc{white-space:nowrap;font-variant-numeric:tabular-nums}.dias{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:600;border-radius:10px;padding:1px 7px;color:var(--mut);border:1px solid var(--line)}
+.dias.urg{color:#fff;background:var(--red);border-color:var(--red)}@media (prefers-color-scheme:dark){.dias.urg{color:#14191b}}
+.cl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+a.btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;padding:6px 11px;border-radius:7px;font-size:13px;font-weight:600;white-space:nowrap}
+a.wa{background:#1f7a4d}@media (prefers-color-scheme:dark){a.btn{color:#14191b}a.wa{color:#fff}}
+.pend{font-size:12.5px;color:var(--mut);font-style:italic}
+.stt{min-width:210px}.stt select{width:100%;font-weight:600}.stt textarea{width:100%;margin-top:6px;min-height:52px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.35;font-family:inherit;resize:vertical}
+.stt .ln{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;font-size:11.5px;color:var(--mut)}
+.stt button{border:0;background:var(--navy);color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer}.stt button:disabled{opacity:.35;cursor:default}
+@media (prefers-color-scheme:dark){.stt button{color:#14191b}}
+.s-novo{color:var(--ink)}.s-em_contato{color:#9a6b00}.s-respondeu{color:#1f5fa8}.s-proposta{color:#7a3fa0}.s-fechado{color:#1f7a4d}.s-descartado{color:var(--mut)}
+#msg{padding:40px;text-align:center;color:var(--mut)}
+@media (max-width:760px){header,main{padding-left:16px;padding-right:16px}.hide-s{display:none}}
+h2.ae{font:600 17px/1.3 Georgia,serif;color:var(--navy);margin:6px 0 10px}
+.vista{display:flex;gap:0;margin-top:14px;border:1px solid var(--navy);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
+.vista button{border:0;background:var(--card);color:var(--navy);padding:10px 22px;font:600 15px/1.2 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;cursor:pointer}
+.vista button+button{border-left:1px solid var(--navy)}.vista button.on{background:var(--navy);color:#fff}
+@media (prefers-color-scheme:dark){.vista button.on{color:#14191b}}
+.vista button small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:2px}
+.hist{font-size:12.5px;line-height:1.45}.hist div{padding:3px 0;border-top:1px dashed var(--line)}.hist div:first-child{border-top:0}
+.hist b{color:#1f7a4d}
+button.ok{border:1px solid #1f7a4d;background:transparent;color:#1f7a4d;border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+button.ok.vez{background:#1f7a4d;color:#fff}button.ok:disabled{opacity:.4;cursor:default}
+.soc{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line)}.soc .sn{font-size:12.5px;font-weight:600;margin-bottom:4px}
+.prop{display:inline-block;margin-top:4px;font-size:11.5px;color:#8a5a00;background:rgba(214,158,46,.14);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.prop{color:#f0c36a}}.foro{display:inline-block;margin-top:4px;font-size:11.5px;color:#1f6b3a;background:rgba(46,160,90,.13);border-radius:6px;padding:2px 7px}@media (prefers-color-scheme:dark){.foro{color:#7fd6a0}}.fonte{font-size:11px;color:var(--mut);margin:-2px 0 6px}
+.envq{font-size:12.5px;color:#1f7a4d;font-weight:600}
+td.ctt{min-width:270px;max-width:360px}
+.ctt .top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ctt .rs{font-size:12px;color:var(--mut);margin-top:5px}
+details.ct{margin-top:4px}details.ct>summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--navy);list-style:none;padding:2px 0;user-select:none}
+details.ct>summary::-webkit-details-marker{display:none}details.ct>summary::before{content:"▸ "}details.ct[open]>summary::before{content:"▾ "}
+details.ct .lst{margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.ct .cl{flex-wrap:nowrap;gap:6px;margin-bottom:5px}.ct .cl .ad{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
+.ct a.btn,.ct button.ok{padding:3px 8px;font-size:11.5px;border-radius:6px}
+.ct .soc{margin-top:6px;padding-top:5px}.ct .soc .sn{font-size:12px;margin-bottom:3px}.ct .fx{font-size:12px;color:var(--mut);margin-bottom:4px}
+.mun{min-width:160px}
+</style></head><body>
+<header><div class="crumb"><a href="/">Listas</a> › CND de obra · decadente</div>
+<h1>CND de obra · decadente</h1>
+<div class="sub" id="resumo">Carregando…</div>
+<div class="vista" id="vista"><button type="button" data-v="ae" class="on"><span id="vae">A enviar</span><small id="vae2"></small></button><button type="button" data-v="en"><span id="ven">Enviados</span><small id="ven2"></small></button></div>
+<div class="bar"><input type="search" id="q" placeholder="Buscar por nome, CNO, município, bairro ou endereço">
+<select id="fmu" aria-label="Município"><option value="">Todos os municípios</option></select>
+<select id="fst" aria-label="Status"><option value="">Todos os status</option></select>
+<label class="f"><input type="checkbox" id="fc" checked> só com contato</label><label class="f"><input type="checkbox" id="fi"> sem campanha de e-mail</label>
+<span class="prog" id="prog"></span><button type="button" class="at" id="atual">Atualizar</button></div></header>
+<main><section id="sae"><h2 class="ae" id="hae">A enviar</h2>
+<table><thead><tr><th>#</th><th>Obra (CNO)</th><th>Proprietário</th><th class="hide-s">Endereço da obra</th><th>Contato</th><th>Status</th></tr></thead><tbody id="tb"></tbody></table>
+<div id="msg"></div></section>
+<section id="sen" hidden><h2 class="ae" id="henv">Enviados</h2>
+<table><thead><tr><th>#</th><th>Obra (CNO)</th><th>Proprietário</th><th class="hide-s">Endereço da obra</th><th>Envios (quem, quando, como)</th><th>Status</th></tr></thead><tbody id="te"></tbody></table>
+<div id="msg2" style="padding:30px;text-align:center;color:var(--mut)"></div></section>
+<p class="sub" style="margin-top:14px">Obras residenciais unifamiliares (pessoa física) com mais de 300 m² de obra nova ou acréscimo, que constam como ativas no Cadastro Nacional de Obras da Receita Federal e começaram há mais de 5 anos: o INSS da obra pode estar decaído e a regularização (encerramento, CND de obra e averbação) tende a sair com pouco ou nenhum imposto. Lidas ao vivo da base do robô de CND. O contato vem da base da Alpha ou da Assertiva (por nome e município); “identificação” mostra como o CPF foi achado. A etiqueta “campanha de e-mail” indica que o lead já foi cadastrado na campanha do Instantly: não mande o e-mail manual de novo para ele. Como enviar: o botão abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura; depois de enviar, clique em “OK, enviado”. O lead vai para “Enviados” com o seu nome, a hora, o canal e o destinatário. Para devolver um lead enviado para “A enviar”, mude o status para “Novo”.</p></main>
+<script src="/_app/topo.js"></script>
+<script type="module">
+import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
+import { cnoFmt, m2, mesAno, endereco, mailto } from '/_app/modelo_cnd.js';
+const $ = id => document.getElementById(id);
+const STATUS = [['novo', 'Novo'], ['em_contato', 'Em contato'], ['respondeu', 'Respondeu'], ['proposta', 'Proposta'], ['fechado', 'Fechado'], ['descartado', 'Descartado']];
+$('fst').innerHTML += STATUS.map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+const me = await new Promise(res => window.ALPHA_ME ? res(window.ALPHA_ME) : document.addEventListener('alpha-me', e => res(e.detail), { once: true }));
+let leads = [];
+const hora = ts => { try { const d = new Date(ts), o = { timeZone: 'America/Sao_Paulo' };
+  return d.toLocaleDateString('pt-BR', o) + ' às ' + d.toLocaleTimeString('pt-BR', { ...o, hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+const telsDe = l => [l.telefone_1, l.telefone_2, l.telefone_3].filter(Boolean);
+const emsDe = l => [l.email_1, l.email_2].filter(Boolean).map(e => String(e).trim().toLowerCase());
+async function lerLeads() {
+  const r = await fetch('/api/cnd', { cache: 'no-store' }); versao(r);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || ('erro ' + r.status));
+  return j;
+}
+async function post(corpo) {
+  const r = await fetch('/api/cnd', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(corpo) }); versao(r);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || ('erro ' + r.status));
+  return j;
+}
+const abertos = new Set();
+function card(l, i) {
+  const ems = emsDe(l), vistos = new Set(), out = [];
+  for (const e of ems) { if (vistos.has(e)) continue; vistos.add(e);
+    out.push(`<div class="cl"><span class="ad" title="${esc(e)}">${esc(e)}</span><a class="btn" data-c="email" data-a="${esc(e)}" href="${esc(mailto(e, l))}">E-mail</a><button type="button" class="ok" data-c="email" data-a="${esc(e)}">OK, enviado</button></div>`); }
+  let nw = 0, nf = 0;
+  for (const t of telsDe(l)) { const f = fone(t); if (!f.fmt || vistos.has(f.fmt)) continue; vistos.add(f.fmt);
+    if (f.wa) { nw++; out.push(`<div class="cl"><span class="ad">${f.fmt}</span><a class="btn wa" data-c="whatsapp" data-a="${esc(f.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${f.wa}">WhatsApp</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(f.fmt)}">OK, enviado</button></div>`); }
+    else { nf++; out.push(`<div class="fx">Fixo ${f.fmt}</div>`); } }
+  const tem = out.length > 0;
+  let principal = '';
+  if (ems.length) principal = `<div class="cl top"><a class="btn" data-c="email" data-a="${esc(ems.join(', '))}" href="${esc(mailto(ems.join(','), l))}">${ems.length > 1 ? `Enviar para os ${ems.length} e-mails` : 'Enviar e-mail'}</a><button type="button" class="ok" data-c="email" data-a="${esc(ems.join(', '))}">OK, enviado</button></div>`;
+  else { const t1 = telsDe(l).map(fone).find(f => f.wa); if (t1) principal = `<div class="cl top"><a class="btn wa" data-c="whatsapp" data-a="${esc(t1.fmt)}" target="_blank" rel="noopener" href="https://wa.me/${t1.wa}">WhatsApp ${t1.fmt}</a><button type="button" class="ok" data-c="whatsapp" data-a="${esc(t1.fmt)}">OK, enviado</button></div>`; }
+  const resumo = [ems.length && `${ems.length} e-mail${ems.length > 1 ? 's' : ''}`, nw && `${nw} WhatsApp`, nf && `${nf} fixo${nf > 1 ? 's' : ''}`].filter(Boolean).join(' · ');
+  const fonte = l.contato_fonte ? `<div class="fonte">${esc(l.contato_fonte)}</div>` : '';
+  const contato = tem ? `${fonte}${principal}<div class="rs">${esc(resumo)}</div><details class="ct"${abertos.has(l.id_cno) ? ' open' : ''}><summary>ver contatos</summary><div class="lst">${out.join('')}</div></details>` : '<span class="pend">contato pendente</span>';
+  const st = l.status_comercial || 'novo';
+  const sel = STATUS.map(([v, t]) => `<option value="${v}"${v === st ? ' selected' : ''}>${t}</option>`).join('');
+  const hist = (Array.isArray(l.envios) ? l.envios : []).slice().sort((a, b) => String(b.em).localeCompare(String(a.em)))
+    .map(e => e.canal === 'voltou' ? `<div><b>${esc(e.por || '')}</b> · ${hora(e.em)} · voltou para “A enviar”</div>` : `<div><b>${esc(e.por || '')}</b> · ${hora(e.em)} · ${e.canal === 'whatsapp' ? 'WhatsApp' : 'e-mail'}${e.alvo ? ' para ' + esc(e.alvo) : ''}</div>`).join('');
+  const envio = l.enviado_em ? `<div class="hist">${hist || `<div><b>${esc(l.enviado_por || '')}</b> · ${hora(l.enviado_em)}</div>`}</div>` : '';
+  const outras = (l.outras_obras || []).filter(Boolean);
+  const tags = [l.cliente_alpha ? `<div class="prop">${esc(l.cliente_alpha)}</div>` : '',
+    l.instantly_status === 'enviado' ? `<div class="foro">Na campanha de e-mail desde ${hora(l.instantly_em)}</div>` : ''].join('');
+  const muni = nomeBR(l.municipio || '');
+  return `<tr data-k="${esc(l.id_cno)}" data-c="${tem ? 1 : 0}" data-st="${esc(st)}" data-m="${esc(muni)}" data-i="${l.instantly_status === 'enviado' ? 1 : 0}"
+    data-t="${esc(norm([l.nome, nomeBR(l.nome || ''), l.id_cno, cnoFmt(l.id_cno), ...outras, muni, l.bairro, endereco(l), l.cep, ...emsDe(l), l.enviado_por || ''].join(' ')))}">` +
+    `<td class="n">${i + 1}</td>` +
+    `<td><b>${m2(l.m2_obra)}</b><div class="em">início ${mesAno(l.data_inicio)}</div><div class="em">CNO ${esc(cnoFmt(l.id_cno))}</div>${outras.length ? `<span class="tag">+${outras.length} obra${outras.length > 1 ? 's' : ''}</span>` : ''}</td>` +
+    `<td><div class="nm">${esc(nomeBR(l.nome || ''))}</div>${tags}<div class="em">${esc(l.identificacao || '')}</div></td>` +
+    `<td class="hide-s mun"><div>${esc(endereco(l))}</div><div class="em">${esc(nomeBR(l.bairro || ''))}${l.bairro ? ' · ' : ''}${esc(muni)}${l.cep ? ' · CEP ' + esc(l.cep) : ''}</div></td>` +
+    `<td class="ctt">${l.enviado_em ? envio : contato}</td>` +
+    `<td class="stt"><select aria-label="Status" class="s-${esc(st)}">${sel}</select>` +
+    `<textarea placeholder="Observação">${esc(l.observacao || '')}</textarea><div class="ln"><span class="qm">${l.responsavel_comercial ? 'responsável: ' + esc(l.responsavel_comercial) : ''}</span><button type="button" class="sv" disabled>Salvar</button></div></td></tr>`;
+}
+let vista = 'ae';
+try { vista = localStorage.getItem('cnd-vista') || 'ae'; } catch (e) {}
+function filt() {
+  const q = norm($('q').value.trim()), st = $('fst').value, mu = $('fmu').value, fc = $('fc').checked, fi = $('fi').checked;
+  const cont = { tb: 0, te: 0 };
+  for (const id of ['tb', 'te']) document.querySelectorAll(`#${id} tr`).forEach(tr => {
+    const ok = tr.dataset.t.includes(q) && (!st || tr.dataset.st === st) && (!mu || tr.dataset.m === mu) && !(id === 'tb' && fc && tr.dataset.c !== '1') && !(fi && tr.dataset.i === '1');
+    tr.style.display = ok ? '' : 'none'; if (ok) cont[id]++;
+  });
+  $('hae').textContent = `A enviar (${cont.tb})`; $('henv').textContent = `Enviados (${cont.te})`;
+  $('vae').textContent = `A enviar · ${cont.tb}`; $('ven').textContent = `Enviados · ${cont.te}`;
+  $('prog').innerHTML = `Mostrando <b>${vista === 'en' ? cont.te : cont.tb}</b>`;
+  $('msg').textContent = cont.tb ? '' : (leads.length ? 'Nada a enviar com esses filtros.' : '');
+  $('msg2').textContent = cont.te ? '' : 'Nenhum envio com esses filtros.';
+}
+function render() {
+  const ae = leads.filter(l => !l.enviado_em), en = leads.filter(l => l.enviado_em).sort((a, b) => String(b.enviado_em).localeCompare(String(a.enviado_em)));
+  $('tb').innerHTML = ae.map(card).join(''); $('te').innerHTML = en.map(card).join('');
+  const mus = [...new Set(leads.map(l => nomeBR(l.municipio || '')).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const atual = $('fmu').value;
+  $('fmu').innerHTML = '<option value="">Todos os municípios</option>' + mus.map(m => `<option${m === atual ? ' selected' : ''}>${esc(m)}</option>`).join('');
+  document.querySelectorAll('#tb tr, #te tr').forEach(ligar); filt();
+}
+function ligar(tr) {
+  const l = () => leads.find(x => x.id_cno === tr.dataset.k);
+  const sel = tr.querySelector('select'), ta = tr.querySelector('textarea'), bt = tr.querySelector('.sv'), qm = tr.querySelector('.qm');
+  let salvo = ta.value;
+  sel.addEventListener('change', async () => {
+    const novo = sel.value, antigo = tr.dataset.st; sel.disabled = true;
+    try { const j = await post({ id_cno: tr.dataset.k, status_comercial: novo }); Object.assign(l(), j.lead || { status_comercial: novo });
+      tr.dataset.st = novo; sel.className = 's-' + novo; qm.textContent = `responsável: ${me.nome} · salvo`;
+      if (novo === 'descartado') { leads = leads.filter(x => x.id_cno !== tr.dataset.k); render(); return; }
+      if (novo === 'novo' && tr.closest('#te')) { render(); return; }
+    } catch (e) { sel.value = antigo; alert('Não salvou o status: ' + e.message); }
+    sel.disabled = false; filt();
+  });
+  ta.addEventListener('input', () => { bt.disabled = ta.value === salvo; tr.dataset.sujo = ta.value === salvo ? '' : '1'; });
+  bt.addEventListener('click', async () => {
+    bt.disabled = true;
+    try { await post({ id_cno: tr.dataset.k, observacao: ta.value }); l().observacao = ta.value; salvo = ta.value; tr.dataset.sujo = ''; qm.textContent = 'observação salva'; }
+    catch (e) { bt.disabled = false; alert('Não salvou a observação: ' + e.message); }
+  });
+  const dt = tr.querySelector('details.ct');
+  if (dt) dt.addEventListener('toggle', () => { dt.open ? abertos.add(tr.dataset.k) : abertos.delete(tr.dataset.k); });
+  tr.querySelectorAll('a[data-c]').forEach(a => a.addEventListener('click', () => { const ok = a.parentElement.querySelector('button.ok'); if (ok) ok.classList.add('vez'); }));
+  tr.querySelectorAll('button.ok').forEach(b => b.addEventListener('click', async () => {
+    tr.querySelectorAll('button.ok').forEach(x => x.disabled = true); b.textContent = 'gravando…';
+    try { const j = await post({ id_cno: tr.dataset.k, enviado: true, canal: b.dataset.c, alvo: b.dataset.a }); Object.assign(l(), j.lead || {}); render(); }
+    catch (e) { tr.querySelectorAll('button.ok').forEach(x => x.disabled = false); b.textContent = 'OK, enviado'; alert('Não registrou o envio: ' + e.message); }
+  }));
+}
+async function carregar(manual) {
+  if (document.querySelector('tr[data-sujo="1"]') && !manual) return;
+  $('atual').disabled = true;
+  try {
+    const j = await lerLeads();
+    leads = (j.leads || []).filter(l => l.status_comercial !== 'descartado');
+    const cc = leads.filter(l => emsDe(l).length || telsDe(l).length).length;
+    $('resumo').textContent = `${leads.length} obras · ${cc} com contato · base do robô de CND · lida às ${quando(new Date())}`;
+    render();
+  } catch (e) { $('msg').textContent = 'Não foi possível ler os leads (' + e.message + '). Tente “Atualizar”.'; $('resumo').textContent = ''; }
+  $('atual').disabled = false;
+}
+function mostrar() {
+  $('sae').hidden = vista !== 'ae'; $('sen').hidden = vista !== 'en';
+  $('vista').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === vista));
+  $('fc').parentElement.style.display = vista === 'ae' ? '' : 'none';
+  filt();
+}
+$('vista').querySelectorAll('button').forEach(b => b.onclick = () => { vista = b.dataset.v; try { localStorage.setItem('cnd-vista', vista); } catch (e) {} mostrar(); });
+['q', 'fst', 'fmu', 'fc', 'fi'].forEach(id => $(id).addEventListener(id === 'q' ? 'input' : 'change', filt));
+$('atual').onclick = () => { if (document.querySelector('tr[data-sujo="1"]') && !confirm('Há observação não salva. Atualizar e perder o texto?')) return; carregar(true); };
+await carregar(true);
+mostrar();
+setInterval(() => carregar(false), 300000);
+</script></body></html>

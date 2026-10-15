@@ -26,7 +26,7 @@ const COOKIE_USER = 'al_u';
 const EVENTOS_OK = new Set(['abriu_email', 'abriu_email_2', 'whatsapp', 'marcou_enviado', 'desmarcou_enviado']);
 
 // versão das páginas: muda a cada publicação. A página compara com o cabeçalho x-app-v e pede para recarregar quando estiver velha.
-const VERSAO = '2026-10-15e';
+const VERSAO = '2026-10-15f';
 
 // ---------- divisão da lista de foro (14/10): cada contato pertence a uma pessoa ----------
 // Para cada pessoa, o hash FNV-1a (30 bits, 5 caracteres) do e-mail-chave dos contatos da sua lista (gerado de data/foro-email1).
@@ -384,6 +384,54 @@ export default async function middleware(req, ctx) {
         if (!r.ok) return json({ erro: `API de leads respondeu ${r.status}: ${t.slice(0, 200)}` }, r.status === 404 ? 404 : 502);
         await registrar(ctx, req, { usuario: user.id, evento: corpo.status_comercial ? 'fcl_status' : 'fcl_obs', caminho: '/laudemio-fcl/',
           detalhe: (`FCL ${fcl}` + (corpo.status_comercial ? ` → ${corpo.status_comercial}` : '') + (corpo.observacao !== undefined ? ` · obs: ${corpo.observacao}` : '')).slice(0, 300) });
+        return new Response(t, { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-app-v': VERSAO } });
+      }
+      return json({ erro: 'use GET ou POST' }, 405);
+    } catch (e) {
+      return json({ erro: 'Falha ao falar com a API de leads: ' + e.message }, 502);
+    }
+  }
+
+  // ----- CND de obra · decadente: repassa para a API leads-cnd-api do Supabase (alpha-spu). Mesmo token do FCL. -----
+  if (path === '/api/cnd') {
+    const tok = env('FCL_LEADS_TOKEN');
+    if (!tok) return json({ erro: 'FCL_LEADS_TOKEN não configurado na Vercel' }, 500);
+    const API = 'https://hewjrukaghsvfkobgxyh.supabase.co/functions/v1/leads-cnd-api';
+    try {
+      if (req.method === 'GET') {
+        const q = new URLSearchParams();
+        const st = url.searchParams.get('status');
+        if (st && STATUS_FCL.includes(st)) q.set('status', st);
+        if (url.searchParams.get('incluir_descartados') === '1') q.set('incluir_descartados', '1');
+        const r = await fetch(API + (q.toString() ? '?' + q : ''), { headers: { 'x-site-token': tok } });
+        const t = await r.text();
+        if (!r.ok) return json({ erro: `API de leads respondeu ${r.status}: ${t.slice(0, 200)}` }, 502);
+        return new Response(t, { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-app-v': VERSAO } });
+      }
+      if (req.method === 'POST') {
+        let b = {};
+        try { b = await req.json(); } catch (e) { return json({ erro: 'JSON inválido' }, 400); }
+        const id = String(b.id_cno || '');
+        if (!/^[0-9]{6,20}$/.test(id)) return json({ erro: 'CNO inválido' }, 400);
+        const corpo = { id_cno: id };
+        if (b.enviado === true) {
+          corpo.enviado = true; corpo.enviado_por = user.nome;
+          corpo.canal = b.canal === 'whatsapp' ? 'whatsapp' : 'email';
+          corpo.alvo = String(b.alvo || '').slice(0, 300);
+        }
+        if (b.status_comercial !== undefined) {
+          if (!STATUS_FCL.includes(b.status_comercial)) return json({ erro: 'status inválido' }, 400);
+          corpo.status_comercial = b.status_comercial;
+          corpo.responsavel_comercial = user.nome;
+        }
+        if (b.observacao !== undefined) corpo.observacao = String(b.observacao).slice(0, 2000);
+        if (Object.keys(corpo).length === 1) return json({ erro: 'nada para gravar' }, 400);
+        const r = await fetch(API, { method: 'POST', headers: { 'x-site-token': tok, 'content-type': 'application/json' }, body: JSON.stringify(corpo) });
+        const t = await r.text();
+        if (!r.ok) return json({ erro: `API de leads respondeu ${r.status}: ${t.slice(0, 200)}` }, r.status === 404 ? 404 : 502);
+        const ev = corpo.enviado ? 'cnd_envio' : corpo.status_comercial ? 'cnd_status' : 'cnd_obs';
+        await registrar(ctx, req, { usuario: user.id, evento: ev, caminho: '/cnd-obra/',
+          detalhe: (`CNO ${id}` + (corpo.enviado ? ` · ${corpo.canal} · ${corpo.alvo}` : '') + (corpo.status_comercial ? ` → ${corpo.status_comercial}` : '') + (corpo.observacao !== undefined ? ` · obs: ${corpo.observacao}` : '')).slice(0, 300) });
         return new Response(t, { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-app-v': VERSAO } });
       }
       return json({ erro: 'use GET ou POST' }, 405);

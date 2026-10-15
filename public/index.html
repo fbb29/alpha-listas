@@ -10,7 +10,8 @@ footer{margin-top:40px;color:var(--mut);font-size:12px}</style></head><body><div
 <div class="g"><a class="c" href="/foro-email1/"><b>Foro · e-mail 1</b><span>Revisão de foro (terrenos) · 1.263 contatos em 3 listas · 14/10/2026</span></a>
 <a class="c" href="/multa/"><b>Multa de transferência</b><span>1.001 devedores com contato · R$ 19.891.923,52 · coleta 13/10/2026</span></a>
 <a class="c" href="/laudemio/"><b>Laudêmio</b><span>706 devedores com contato · R$ 12.989.310,11 · coleta 13/10/2026</span></a>
-<a class="c" href="/laudemio-fcl/"><b>Laudêmio · FCL novas</b><span id="fcl">atualizado diariamente</span></a></div>
+<a class="c" href="/laudemio-fcl/"><b>Laudêmio · FCL novas</b><span id="fcl">atualizado diariamente</span></a>
+<a class="c" href="/cnd-obra/"><b>CND de obra · decadente</b><span id="cnd">obras abertas no CNO há mais de 5 anos</span></a></div>
 <footer>Uso interno. Não compartilhe este link.</footer></div><script src="/_app/topo.js"></script>
 <script>
 // card da lista ao vivo: número de leads e soma vêm da base do robô
@@ -20,6 +21,14 @@ footer{margin-top:40px;color:var(--mut);font-size:12px}</style></head><body><div
     const j = await r.json(), l = j.leads || [];
     const soma = l.reduce((x, y) => x + Number(y.valor_total || 0), 0);
     document.getElementById('fcl').textContent = `${l.length} lead${l.length === 1 ? '' : 's'} · R$ ${soma.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} · atualizado diariamente`;
+  } catch (e) {}
+})();
+(async () => {
+  try {
+    const r = await fetch('/api/cnd', { cache: 'no-store' }); if (!r.ok) return;
+    const l = (await r.json()).leads || [];
+    const c = l.filter(x => x.email_1 || x.telefone_1).length;
+    document.getElementById('cnd').textContent = `${l.length} obras · ${c} com contato · base do robô de CND`;
   } catch (e) {}
 })();
 </script></body></html>
