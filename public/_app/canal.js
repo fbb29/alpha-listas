@@ -14,6 +14,34 @@ const css = `.reg{display:flex;flex-direction:column;gap:3px;margin-top:6px}
 #nova-versao{position:sticky;top:0;z-index:5;background:var(--gold);color:#14191b;text-align:center;padding:10px 16px;font-weight:600;font-size:14px}#nova-versao button{margin-left:10px;padding:5px 12px;border:0;border-radius:6px;background:#14191b;color:#fff;font-weight:600;cursor:pointer}`;
 const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
+// Botões de e-mail (mailto): abrem o app de e-mail do computador (Mail), que põe a assinatura da conta.
+// Em todo clique o texto do e-mail também vai para a área de transferência: se o Mail abrir em branco, é só colar (Cmd+V).
+// Link muito longo (titular com muitos imóveis) costuma não abrir: nesse caso abre só com destinatário e assunto e o texto vai colado.
+const LIMITE_MAILTO = 1900;
+function aviso(txt) {
+  let t = document.getElementById('aviso-mail');
+  if (!t) { t = document.createElement('div'); t.id = 'aviso-mail';
+    t.style.cssText = 'position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;max-width:min(560px,92vw);background:#1d2a30;color:#fff;padding:11px 16px;border-radius:9px;font:14px/1.4 -apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25)';
+    document.body.appendChild(t); }
+  t.textContent = txt; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(() => { t.style.display = 'none'; }, 9000);
+}
+document.addEventListener('click', ev => {
+  const a = ev.target.closest && ev.target.closest('a[href^="mailto:"]');
+  if (!a) return;
+  const href = a.getAttribute('href'), i = href.indexOf('&body=');
+  if (i < 0) return;
+  let corpo = '';
+  try { corpo = decodeURIComponent(href.slice(i + 6).split('&')[0]).replace(/\r\n/g, '\n'); } catch (e) {}
+  if (corpo && navigator.clipboard) navigator.clipboard.writeText(corpo).catch(() => {});
+  if (href.length > LIMITE_MAILTO) {
+    a.setAttribute('href', href.slice(0, i));                 // só destinatário e assunto
+    setTimeout(() => a.setAttribute('href', href), 1500);
+    aviso('E-mail longo: o Mail abre só com destinatário e assunto. O texto já está copiado — clique no corpo do e-mail e cole (Cmd+V).');
+  } else {
+    aviso('Abrindo no Mail. O texto também foi copiado: se o e-mail abrir em branco, cole no corpo (Cmd+V).');
+  }
+}, true);
+
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const quando = ts => { try { return new Date(ts).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ''); } catch (e) { return ''; } };
 // busca sem acento e sem maiúsculas
@@ -135,7 +163,7 @@ export function pendentes() {
 }
 
 // versão da página: o servidor manda x-app-v; se for outra, aparece uma faixa pedindo para recarregar.
-export const VERSAO = '2026-10-15c';
+export const VERSAO = '2026-10-15d';
 export function versao(r) {
   const v = r && r.headers && r.headers.get('x-app-v');
   if (!v || v === VERSAO || document.getElementById('nova-versao')) return;
