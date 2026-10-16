@@ -232,11 +232,19 @@ const diaSP = (ts) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_
 const horaSP = (ts) => new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(ts)).replace(' ', 'T') + '-03:00';
 const dataValida = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d || '') && !isNaN(Date.parse(d + 'T12:00:00Z')) && new Date(d + 'T12:00:00Z').toISOString().slice(0, 10) === d;
 
+const RELATORIO_KEY_SHA256 = 'b8cda04bd41b0b91a420aa6c52d9bdae9f1a4ced71487d3d1c43d6433b3b56aa';
+async function sha256hex(t) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
+}
+
 async function relatorio(req, url) {
   const chaveEnv = env('RELATORIO_API_KEY');
   const auth = req.headers.get('authorization') || '';
   const m = auth.match(/^Bearer\s+(.+)$/i);
-  if (!chaveEnv || !m || !iguais(m[1].trim(), chaveEnv)) return json({ erro: 'não autorizado' }, 401);
+  // Sem a variável no Vercel, vale a chave cujo SHA-256 está abaixo (só o hash fica no código).
+  const okChave = m && (chaveEnv ? iguais(m[1].trim(), chaveEnv) : iguais(await sha256hex(m[1].trim()), RELATORIO_KEY_SHA256));
+  if (!okChave) return json({ erro: 'não autorizado' }, 401);
   if (req.method !== 'GET') return json({ erro: 'somente GET (endpoint somente leitura)' }, 405);
   const di = url.searchParams.get('data_inicio'), df = url.searchParams.get('data_fim');
   if (!dataValida(di) || !dataValida(df) || di > df) return json({ erro: 'informe data_inicio e data_fim no formato AAAA-MM-DD (data_inicio <= data_fim)' }, 400);
