@@ -19,3 +19,8 @@ Site interno da Alpha Soluções com listas de contato para a equipe comercial (
 - Multa de transferência e Laudêmio: `public/multa/` e `public/laudemio/` (mesmo `index.html`, a lista vem do caminho). Dados em `public/data/multa/c0..c6.bin` e `public/data/laudemio/c0..c5.bin`. Listas compartilhadas, sem divisão por pessoa; "Feito" salvo por CPF/CNPJ.
 - Canal de contato: o clique em E-mail/WhatsApp grava em `enviados` a chave `<contato>#e:<e-mail>` ou `<contato>#w:<telefone>` (quem e quando), via `/api/evento`; o × na linha remove. Código comum em `public/_app/canal.js`.
 - Multa/laudêmio: coleta do robô de 13/10/2026 sem piso de valor (`c0..` até o maior índice; a página ordena por valor).
+
+## Relatório (somente leitura)
+- `GET /api/relatorio?data_inicio=AAAA-MM-DD&data_fim=AAAA-MM-DD` (fuso America/Sao_Paulo), cabeçalho `Authorization: Bearer <RELATORIO_API_KEY>`. Sem a chave: 401. Só lê; qualquer outro método: 405.
+- Devolve: resumo por pessoa e dia (marcou feito/enviado, e-mails e WhatsApp abertos, observações), lista de ações com lead e lista de origem, e para cada "marcou feito / enviado" se o e-mail/WhatsApp do lead foi aberto pelo site antes (o envio em si acontece no Mail de cada um e não é confirmável pelo site).
+- O log (`alpha_listas.acessos`) é histórico permanente: um trigger no banco bloqueia UPDATE, DELETE e TRUNCATE.
