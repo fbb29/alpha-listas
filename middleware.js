@@ -293,8 +293,9 @@ async function relatorio(req, url) {
     const det = String(r.detalhe || '');
     if (['abriu_email', 'abriu_email_2', 'whatsapp'].includes(r.evento)) {
       const [nome, resto] = det.split(' · ');
-      const em = [...(resto || '').matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
-      return { nome: (nome || '').trim() || null, emails: em, telefone: em.length ? null : (resto || '').trim() || null };
+      const em = [...(resto || nome || '').matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+      const soEmail = !resto && em.length && (nome || '').trim().toLowerCase() === em[0];
+      return { nome: soEmail ? null : (nome || '').trim() || null, emails: em, telefone: em.length ? null : (resto || '').trim() || null };
     }
     if (lista === 'laudemio-fcl') {
       const fcls = [...det.matchAll(/\d{8}-\d{2}/g)].map((x) => x[0]);
