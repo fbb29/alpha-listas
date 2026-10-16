@@ -156,7 +156,7 @@ export function pendentes() {
 }
 
 // versão da página: o servidor manda x-app-v; se for outra, aparece uma faixa pedindo para recarregar.
-export const VERSAO = '2026-10-15e';
+export const VERSAO = '2026-10-16a';
 export function versao(r) {
   const v = r && r.headers && r.headers.get('x-app-v');
   if (!v || v === VERSAO || document.getElementById('nova-versao')) return;

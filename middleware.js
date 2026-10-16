@@ -26,7 +26,7 @@ const COOKIE_USER = 'al_u';
 const EVENTOS_OK = new Set(['abriu_email', 'abriu_email_2', 'whatsapp', 'marcou_enviado', 'desmarcou_enviado']);
 
 // versão das páginas: muda a cada publicação. A página compara com o cabeçalho x-app-v e pede para recarregar quando estiver velha.
-const VERSAO = '2026-10-15f';
+const VERSAO = '2026-10-16a';
 
 // ---------- divisão da lista de foro (14/10): cada contato pertence a uma pessoa ----------
 // Para cada pessoa, o hash FNV-1a (30 bits, 5 caracteres) do e-mail-chave dos contatos da sua lista (gerado de data/foro-email1).

@@ -36,7 +36,9 @@ export function corpo(r, lista) {
     'Fico à disposição.\nAtenciosamente,'].join('\n\n');
 }
 
+// para: um e-mail ou vários separados por vírgula (todos vão no mesmo e-mail)
 export function mailto(para, r, lista) {
-  return 'mailto:' + encodeURIComponent(para).replace(/%40/g, '@') + '?subject=' + encodeURIComponent(assunto(r, lista)) +
+  const dest = String(para).split(/\s*,\s*/).filter(Boolean).map(e => encodeURIComponent(e).replace(/%40/g, '@')).join(',');
+  return 'mailto:' + dest + '?subject=' + encodeURIComponent(assunto(r, lista)) +
     '&body=' + encodeURIComponent(corpo(r, lista).replace(/\n/g, '\r\n'));
 }

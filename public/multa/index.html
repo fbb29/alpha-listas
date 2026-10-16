@@ -32,7 +32,7 @@ input[type=checkbox]{width:18px;height:18px;accent-color:var(--navy)}.quem{font-
 <span class="prog">Contatados: <b id="cntt">0</b> · Feitos: <b id="cnt">0</b> de <span id="tot">0</span></span></div></header>
 <main><table><thead><tr><th>#</th><th>Devedor</th><th class="hide-s">Município</th><th class="v">Débito</th><th>Contato</th><th>Feito · observação</th></tr></thead><tbody id="tb"></tbody></table>
 <div id="msg"></div>
-<p class="sub" style="margin-top:14px">Lista sem divisão por pessoa. Ao clicar em “E-mail” ou “WhatsApp”, o contato fica registrado na linha com o canal, o endereço ou número, quem clicou e a data, visível para toda a equipe (o × remove um registro seu feito por engano). “Feito” é para quando o contato foi concluído. “E-mail” abre o Mail com destinatário, assunto e texto prontos (a assinatura é a do próprio Mail); “WhatsApp” abre a conversa no WhatsApp Web (só celular). Os avisos em amarelo e vermelho vêm da conferência da base (e-mail corrigido, contato em campanha do Instantly, e-mail achado só pelo nome). Contatos reunidos de todas as bases recebidas (Assertiva, planilhas da equipe, CRM, campanhas); quem tem processo na planilha Protocolos SPU e clientes Alpha estão fora.</p></main>
+<p class="sub" style="margin-top:14px">Lista sem divisão por pessoa. Ao clicar em “E-mail” ou “WhatsApp”, o contato fica registrado na linha com o canal, o endereço ou número, quem clicou e a data, visível para toda a equipe (o × remove um registro seu feito por engano). “Feito” é para quando o contato foi concluído. “E-mail” abre o Mail com destinatário, assunto e texto prontos; quando há mais de um e-mail, “E-mail para todos” põe todos os endereços no mesmo e-mail (a assinatura é a do próprio Mail); “WhatsApp” abre a conversa no WhatsApp Web (só celular). Os avisos em amarelo e vermelho vêm da conferência da base (e-mail corrigido, contato em campanha do Instantly, e-mail achado só pelo nome). Contatos reunidos de todas as bases recebidas (Assertiva, planilhas da equipe, CRM, campanhas); quem tem processo na planilha Protocolos SPU e clientes Alpha estão fora.</p></main>
 <script src="/_app/topo.js"></script>
 <script type="module">
 import { marcas, htmlMarcas, registrarClique, marcar, versao, corrigir, htmlFeito, carregarAvisos, avisosDe, htmlAvisos, nomeBR, norm, esc, fone, pendentes, htmlObs, ligarObs } from '/_app/canal.js';
@@ -66,7 +66,9 @@ const chaveDe = r => (r[1] && r[1] !== 'nan') ? r[1] : r[0];
 $('tb').innerHTML = rows.map((r, i) => {
   const [nomeRaw, doc, pj, valor, nr, rip, mun, emsRaw, tfs, contato, obito] = r;
   const nome = nomeBR(nomeRaw), ems = corrigir(emsRaw), k = chaveDe(r), cid = municipio(mun);
-  const el = ems.map(e => `<div class="cl"><a class="btn" data-ev="abriu_email" data-a="${esc(e)}" href="${esc(mailto(e, r, LISTA))}">E-mail</a><span class="em">${esc(e)}</span></div>`).join('');
+  const uniq = [...new Set(ems.map(e => String(e).trim().toLowerCase()).filter(Boolean))];
+  const todos = uniq.length > 1 ? `<div class="cl"><a class="btn" data-ev="abriu_email" data-a="${esc(uniq.join(', '))}" href="${esc(mailto(uniq.join(','), r, LISTA))}">E-mail para todos (${uniq.length})</a><span class="em">mesmo e-mail para todos os endereços abaixo</span></div>` : '';
+  const el = todos + ems.map(e => `<div class="cl"><a class="btn" data-ev="abriu_email" data-a="${esc(e)}" href="${esc(mailto(e, r, LISTA))}">E-mail</a><span class="em">${esc(e)}</span></div>`).join('');
   const vistos = new Set(), tl = [];
   for (const t of tfs) { const f = fone(t); if (!f.fmt || vistos.has(f.fmt)) continue; vistos.add(f.fmt);
     tl.push(f.wa ? `<a class="btn wa" data-ev="whatsapp" data-a="${esc(f.wa.slice(2))}" target="_blank" rel="noopener" href="https://web.whatsapp.com/send?phone=${f.wa}"${f.antigo ? ' title="Número antigo de 8 dígitos: o 9 foi acrescentado"' : ''}>WhatsApp ${f.fmt}</a>` : `<span class="em">Fixo ${f.fmt}</span>`); }
