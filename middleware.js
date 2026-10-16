@@ -7,6 +7,7 @@
 //   SUPABASE_URL       https://<ref>.supabase.co
 //   SUPABASE_ANON_KEY  chave anon (pública) do projeto
 //   LOG_TOKEN          token exigido pelas funções alpha_* no Supabase
+//   RELATORIO_API_KEY  chave do endpoint somente leitura GET /api/relatorio (cabeçalho Authorization: Bearer <chave>)
 
 export const config = { matcher: '/:path*' };
 
@@ -216,6 +217,156 @@ ${erro ? `<p style="color:var(--err)">Erro ao ler o log: ${esc(erro)}</p>` : ''}
 }
 
 // ---------- roteamento ----------
+// ---------- relatório somente leitura: GET /api/relatorio?data_inicio=AAAA-MM-DD&data_fim=AAAA-MM-DD ----------
+// Autenticação própria (Authorization: Bearer RELATORIO_API_KEY), sem sessão. Só lê: nenhuma escrita em lugar nenhum.
+const NOME_LISTA = { multa: 'Multa de transferência', laudemio: 'Laudêmio', 'laudemio-fcl': 'Laudêmio · FCL novas',
+  'foro-email1': 'Foro e-mail 1', 'cnd-obra': 'CND de obra' };
+const ACAO_REL = {
+  marcou_enviado: 'Marcou feito / enviado', fcl_envio: 'Marcou feito / enviado', desmarcou_enviado: 'Desmarcou feito / enviado',
+  abriu_email: 'Abriu e-mail', abriu_email_2: 'Abriu e-mail', whatsapp: 'Abriu WhatsApp',
+  observacao: 'Observação', fcl_obs: 'Observação', fcl_status: 'Mudou status',
+};
+const EMAIL_RX = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
+const listaDe = (caminho) => String(caminho || '').replace(/^\/+/, '').split(/[/?#]/)[0] || '';
+const diaSP = (ts) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date(ts));
+const horaSP = (ts) => new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(ts)).replace(' ', 'T') + '-03:00';
+const dataValida = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d || '') && !isNaN(Date.parse(d + 'T12:00:00Z')) && new Date(d + 'T12:00:00Z').toISOString().slice(0, 10) === d;
+
+async function relatorio(req, url) {
+  const chaveEnv = env('RELATORIO_API_KEY');
+  const auth = req.headers.get('authorization') || '';
+  const m = auth.match(/^Bearer\s+(.+)$/i);
+  if (!chaveEnv || !m || !iguais(m[1].trim(), chaveEnv)) return json({ erro: 'não autorizado' }, 401);
+  if (req.method !== 'GET') return json({ erro: 'somente GET (endpoint somente leitura)' }, 405);
+  const di = url.searchParams.get('data_inicio'), df = url.searchParams.get('data_fim');
+  if (!dataValida(di) || !dataValida(df) || di > df) return json({ erro: 'informe data_inicio e data_fim no formato AAAA-MM-DD (data_inicio <= data_fim)' }, 400);
+  const fimExcl = new Date(Date.parse(df + 'T12:00:00Z') + 86400000).toISOString().slice(0, 10);
+  const ini = `${di}T00:00:00-03:00`, fim = `${fimExcl}T00:00:00-03:00`;   // America/Sao_Paulo (sem horário de verão)
+
+  let rows, apoio;
+  try {
+    [rows, apoio] = await Promise.all([rpc('alpha_relatorio', { p_ini: ini, p_fim: fim }), rpc('alpha_relatorio_apoio', {})]);
+  } catch (e) { return json({ erro: 'falha ao ler o log: ' + e.message }, 502); }
+  rows = rows || []; apoio = apoio || [];
+
+  // nomes dos leads: cliques "Nome · e-mails/telefone" do histórico inteiro
+  const nomePorContato = new Map();
+  const cliques = [];
+  for (const a of apoio) {
+    if (a.tipo !== 'clique') continue;
+    const [nome, resto] = String(a.texto).split(' · ');
+    const contatos = [...(resto || '').matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+    const tel = (resto || '').replace(/\D/g, '');
+    for (const c of contatos) if (nome && !nomePorContato.has(c)) nomePorContato.set(c, nome.trim());
+    if (tel.length >= 10 && !contatos.length && nome) nomePorContato.set('tel:' + tel, nome.trim());
+    cliques.push({ usuario: a.usuario, lista: listaDe(a.lista), ts: a.ts, evento: a.chave, contatos, tel, nome: (nome || '').trim() });
+  }
+  // e-mails de cada chave (CPF/CNPJ, FCL...) pelas marcações de canal "<chave>#e:<e-mails>"
+  const emailsPorChave = new Map();
+  for (const a of apoio) {
+    if (a.tipo !== 'canal') continue;
+    const [ch, canal] = String(a.chave).split('#');
+    if (!canal) continue;
+    const k = `${a.lista}|${ch}`;
+    const em = [...canal.matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+    if (em.length) emailsPorChave.set(k, [...new Set([...(emailsPorChave.get(k) || []), ...em])]);
+  }
+  // FCL: nome e e-mails pela API de leads (só leitura)
+  const fclInfo = new Map();
+  if (rows.some((r) => String(r.caminho || '').startsWith('/laudemio-fcl')) && env('FCL_LEADS_TOKEN')) {
+    try {
+      const r = await fetch('https://hewjrukaghsvfkobgxyh.supabase.co/functions/v1/leads-api?incluir_descartados=1', { headers: { 'x-site-token': env('FCL_LEADS_TOKEN') } });
+      if (r.ok) for (const l of (await r.json()).leads || []) fclInfo.set(l.fcl, l);
+    } catch (e) {}
+  }
+
+  const pessoa = (u) => USERS[u]?.nome || u || '';
+  const leadDe = (r, lista) => {
+    const det = String(r.detalhe || '');
+    if (['abriu_email', 'abriu_email_2', 'whatsapp'].includes(r.evento)) {
+      const [nome, resto] = det.split(' · ');
+      const em = [...(resto || '').matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+      return { nome: (nome || '').trim() || null, emails: em, telefone: em.length ? null : (resto || '').trim() || null };
+    }
+    if (lista === 'laudemio-fcl') {
+      const fcls = [...det.matchAll(/\d{8}-\d{2}/g)].map((x) => x[0]);
+      const l = fcls.map((f) => fclInfo.get(f)).find(Boolean);
+      const em = [...det.matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+      return { nome: l?.responsavel || null, emails: em.length ? em : [l?.email_1, l?.email_2].filter(Boolean), fcl: fcls, rip: l?.rip || null };
+    }
+    // marcou/desmarcou/observação nas listas: detalhe = chave (CPF/CNPJ ou e-mail), observação = "chave: texto"
+    const chave = (r.evento === 'observacao' ? det.split(': ')[0] : det.split('#')[0]).trim();
+    let em = [...chave.matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+    if (!em.length) em = emailsPorChave.get(`${lista}|${chave}`) || [];
+    if (!em.length && det.includes('#e:')) em = [...det.split('#e:')[1].matchAll(EMAIL_RX)].map((x) => x[0].toLowerCase());
+    const nome = em.map((e) => nomePorContato.get(e)).find(Boolean) || null;
+    return { nome, emails: em, chave };
+  };
+
+  const acoes = [], porDia = new Map(), marcados = [];
+  for (const r of rows) {
+    if (!ACAO_REL[r.evento]) continue;   // só ações sobre leads (login e páginas abertas ficam de fora)
+    const lista = listaDe(r.caminho), dia = diaSP(r.ts);
+    const lead = leadDe(r, lista);
+    const acao = { data_hora: horaSP(r.ts), dia, pessoa: pessoa(r.usuario), usuario: r.usuario, acao: ACAO_REL[r.evento], evento: r.evento,
+      lead, lista_origem: lista, lista_nome: NOME_LISTA[lista] || lista, detalhe: r.detalhe };
+    acoes.push(acao);
+    const k = `${dia}|${r.usuario}`;
+    if (!porDia.has(k)) porDia.set(k, { data: dia, pessoa: pessoa(r.usuario), usuario: r.usuario, marcou_feito_enviado: 0, emails_abertos: 0, whatsapp_abertos: 0, observacoes: 0, desmarcou: 0 });
+    const c = porDia.get(k);
+    if (r.evento === 'marcou_enviado' || r.evento === 'fcl_envio') c.marcou_feito_enviado++;
+    else if (r.evento === 'abriu_email' || r.evento === 'abriu_email_2') c.emails_abertos++;
+    else if (r.evento === 'whatsapp') c.whatsapp_abertos++;
+    else if (r.evento === 'observacao' || r.evento === 'fcl_obs') c.observacoes++;
+    else if (r.evento === 'desmarcou_enviado') c.desmarcou++;
+
+    if (r.evento === 'marcou_enviado' || r.evento === 'fcl_envio') {
+      // o site não tem acesso à caixa de saída de ninguém: o que dá para saber é se a pessoa ABRIU o e-mail/WhatsApp
+      // daquele lead pelo site (clique registrado) antes de marcar, e qual canal ela registrou.
+      const contatos = new Set(lead.emails || []);
+      const antes = cliques.filter((c2) => c2.usuario === r.usuario && c2.ts <= r.ts && Date.parse(r.ts) - Date.parse(c2.ts) < 7 * 86400000
+        && (c2.contatos.some((e) => contatos.has(e)) || (lead.nome && c2.nome && c2.nome.toLowerCase() === String(lead.nome).toLowerCase())));
+      const ultEmail = antes.filter((c2) => c2.evento !== 'whatsapp').pop(), ultWa = antes.filter((c2) => c2.evento === 'whatsapp').pop();
+      const canalFcl = r.evento === 'fcl_envio' ? (String(r.detalhe || '').split(' · ')[0] || null) : null;
+      let marcacoesCanal = [];
+      if (lista === 'laudemio-fcl') {
+        const l = (lead.fcl || []).map((f) => fclInfo.get(f)).find(Boolean);
+        marcacoesCanal = (l?.envios || []).filter((e) => e.canal !== 'voltou').map((e) => ({ em: horaSP(e.em), por: e.por, canal: e.canal, destinatario: e.alvo || null }));
+      }
+      marcados.push({ data_hora: acao.data_hora, pessoa: acao.pessoa, lista_origem: lista, lead,
+        canal_registrado: canalFcl,
+        abriu_email_pelo_site_antes: !!ultEmail, abriu_email_em: ultEmail ? horaSP(ultEmail.ts) : null,
+        abriu_whatsapp_pelo_site_antes: !!ultWa, abriu_whatsapp_em: ultWa ? horaSP(ultWa.ts) : null,
+        envios_registrados_no_lead: marcacoesCanal.length ? marcacoesCanal : undefined,
+        email_enviado_confirmado: null,
+        confirmacao: ultEmail ? 'e-mail aberto pelo site antes de marcar; o envio em si acontece no Mail de quem enviou e o site não tem como confirmar'
+          : ultWa ? 'WhatsApp aberto pelo site antes de marcar; envio não confirmável pelo site'
+          : 'nenhum clique de e-mail/WhatsApp registrado para esse lead antes de marcar' });
+    }
+  }
+  const resumo = [...porDia.values()].sort((a, b) => a.data.localeCompare(b.data) || a.pessoa.localeCompare(b.pessoa));
+  const totais = {};
+  for (const x of resumo) {
+    const t = totais[x.pessoa] ||= { marcou_feito_enviado: 0, emails_abertos: 0, whatsapp_abertos: 0, observacoes: 0, desmarcou: 0 };
+    for (const k of Object.keys(t)) t[k] += x[k];
+  }
+  return new Response(JSON.stringify({
+    periodo: { data_inicio: di, data_fim: df, fuso: 'America/Sao_Paulo' },
+    gerado_em: horaSP(new Date()),
+    total_acoes: acoes.length,
+    resumo_por_pessoa_e_dia: resumo,
+    totais_por_pessoa: totais,
+    acoes,
+    marcados_feito_enviado: marcados,
+    observacoes_sobre_os_dados: [
+      'Somente leitura: este endpoint não altera nada.',
+      'Ações = cliques e marcações sobre leads; entradas no site e páginas abertas não entram.',
+      'O site não acessa a caixa de saída de ninguém: email_enviado_confirmado é sempre null. O que o site sabe é se o e-mail/WhatsApp do lead foi aberto pelo site antes de marcar (e, na lista Laudêmio · FCL novas, o canal e o destinatário registrados).',
+      'Lista Laudêmio · FCL novas: cliques em e-mail/WhatsApp passam a ser registrados a partir de 16/10/2026.',
+    ],
+  }), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
+}
+
 export default async function middleware(req, ctx) {
   const url = new URL(req.url);
   const path = url.pathname;
@@ -251,6 +402,8 @@ export default async function middleware(req, ctx) {
     if (await sessao(req)) return Response.redirect(new URL(destinoSeguro(url.searchParams.get('next') || '/'), url), 303);
     return html(paginaLogin({ next: destinoSeguro(url.searchParams.get('next') || '/'), ultimo }));
   }
+
+  if (path === '/api/relatorio') return relatorio(req, url);
 
   const user = await sessao(req);
 

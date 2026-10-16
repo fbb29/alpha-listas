@@ -75,7 +75,7 @@ details.ct .lst{margin-top:6px;padding:8px 10px;border:1px solid var(--line);bor
 <p class="sub" style="margin-top:14px">Leads de laudêmio com FCL emitida, lidos ao vivo da base do robô (atualizada todo dia): não é preciso republicar o site para os novos aparecerem. Descartados não aparecem. Tier A: laudêmio de R$ 40.000,00 para cima. Tier B: de R$ 20.000,00 a R$ 40.000,00. Vencimento em menos de 7 dias fica em vermelho. Como enviar: o botão de cada lead abre o Mail com destinatário, assunto e texto prontos, e a sua assinatura (“Enviar para todos os e-mails” põe todos os endereços cadastrados, da empresa e dos sócios, no mesmo e-mail). Para mandar a um contato só, ou pelo WhatsApp, clique em “ver contatos”; depois de enviar, clique em “OK, enviado”. O lead sai de “A enviar” e vai para “Enviados” (botão no topo), com o seu nome, a hora, o canal e o destinatário, gravados na base para toda a equipe e para o robô. Titular com vários imóveis recebe um e-mail só, com todos os RIPs, e o “OK, enviado” marca todas as FCLs dele. Para devolver um lead enviado para “A enviar”, mude o status dele para “Novo”. Status e observação também ficam salvos na base; quem muda o status passa a constar como responsável comercial.</p></main>
 <script src="/_app/topo.js"></script>
 <script type="module">
-import { versao, nomeBR, norm, esc, fone, quando } from '/_app/canal.js';
+import { versao, nomeBR, norm, esc, fone, quando, registrarClique } from '/_app/canal.js';
 import { brl, dataBR, mailto } from '/_app/modelo_fcl.js';
 const $ = id => document.getElementById(id);
 const STATUS = [['novo', 'Novo'], ['em_contato', 'Em contato'], ['respondeu', 'Respondeu'], ['proposta', 'Proposta'], ['fechado', 'Fechado'], ['descartado', 'Descartado']];
@@ -244,7 +244,13 @@ function ligar(tr) {
   const dt = tr.querySelector('details.ct');
   if (dt) dt.addEventListener('toggle', () => { dt.open ? abertos.add(tr.dataset.k) : abertos.delete(tr.dataset.k); });
   // clicou em Enviar: destaca o "OK, enviado" ao lado
-  tr.querySelectorAll('a[data-c]').forEach(a => a.addEventListener('click', () => { const ok = a.parentElement.querySelector('button.ok'); if (ok) ok.classList.add('vez'); }));
+  tr.querySelectorAll('a[data-c]').forEach(a => a.addEventListener('click', () => {
+    const ok = a.parentElement.querySelector('button.ok'); if (ok) ok.classList.add('vez');
+    // registra o clique no log (relatório: e-mail/WhatsApp aberto pelo site, por quem e quando)
+    const gr = g();
+    if (gr) registrarClique({ lista: 'laudemio-fcl', chave: gr.ls.map(l => l.fcl).join(','), evento: a.dataset.c === 'whatsapp' ? 'whatsapp' : 'abriu_email',
+      alvo: a.dataset.a || '', detalhe: `${nomeBR(gr.ls[0].responsavel)} · ${a.dataset.a || ''}`.slice(0, 300) });
+  }));
   tr.querySelectorAll('button.ok').forEach(b => b.addEventListener('click', async () => {
     const gr = g(), fcls = (gr.falta.length ? gr.falta : gr.ls).map(l => l.fcl);
     tr.querySelectorAll('button.ok').forEach(x => x.disabled = true); b.textContent = 'gravando…';
